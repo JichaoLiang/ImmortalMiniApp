@@ -1,0 +1,46 @@
+/* pages/product/product.wxss */
+.active {
+  color:rgb(13, 105, 224);
+  font-weight:900;
+  border-bottom-color: rgb(187, 233, 210);
+}
+
+
+.fixedbutton{
+  float: left;
+  padding: 10rpx;
+  margin-left: 40rpx;
+  font-size: 30rpx;
+}
+
+.fixedbutton image{
+  width:80rpx;
+  height:80rpx;
+  float: left;
+}
+
+.fixedbutton text{
+  float: left;
+  width:30rpx;
+  padding-top:20rpx;
+}
+
+.grid-container{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 16rpx;
+  justify-content: space-between;
+}
+
+.grid-item{
+  display:flex;
+  width: 49%;
+  flex-direction: column;
+  box-sizing:  border-box;
+  margin-top: 16rpx;
+}
+
+.grid-item > image {
+  width: 100%;
+  border-radius:  10rpx 10rpx 0 0;
+}

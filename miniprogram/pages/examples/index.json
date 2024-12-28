@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "Immortal APP",
+  "usingComponents": {
+    "cloud-tip-modal": "/components/cloudTipModal/index"
+  }
+}
