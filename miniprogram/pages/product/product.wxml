@@ -1,0 +1,69 @@
+<!--pages/product/product.wxml-->
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view style="display: flex; flex-direction: column; align-items: center; position: relative;">
+  <view style="width: 100%; max-height: 240px; box-sizing: border-box;background-color: rgb(255, 255, 255);">
+        <!-- <view style="color: aliceblue; z-index: 99999; position: absolute; bottom:40rpx; left:40rpx;" bindtap="showTip" data-url='{{item.linkid}}'>{{item.title}}</view> -->
+        <view style="position: absolute; margin:40rpx; z-index: 999; font-weight: 900;color: white; font-size:x-large;">{{"《" + product.name + "》"}}</view>
+        <view style="position: absolute; max-width: 90%; margin-top:120rpx; margin-left: 40rpx; z-index: 999; font-weight: 400;color: white; ">{{product.description}}</view>
+        <button type="default" style="position: absolute; margin-left:40rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: rgb(20, 19, 19); background-color: rgb(243, 148, 40); " bind:tap="play">从头开始</button>
+        <button type="default" style="position: absolute; margin-left:280rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: rgb(20, 19, 19); background-color: rgb(192, 243, 199); " bind:tap="continue">断点继续</button>
+        <button type="default" style="position: absolute; margin-left:520rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: {{cachebuttondisable?'gray': 'rgb(20, 19, 19)'}}; background-color: rgb(181, 214, 63); " disabled="{{cachebuttondisable}}" bind:tap="cacheproduct">{{cachetext}}</button>
+        <image mode="aspectFill" style="width: 100%; opacity: 0.7;" src="{{product.images[0].url}}"></image>
+    </view>
+    <scroll-view show-scrollbar="true" scroll-x="true" style='background-color:rgb(219, 223, 226) ; height: 40px; display: flex; white-space:nowrap;flex-direction: column;'>
+      <view style="border-radius: 5px; margin:2px; font-size: 30rpx;padding: 18.8rpx;display:inline-block;" bindtap="switchtab" data-id="introduction" class="List {{display=='introduction'?'active':''}}">简介</view>
+      <view style="border-radius: 5px; margin:2px; font-size: 30rpx;padding: 18.8rpx;display:inline-block;" bindtap="switchtab" data-id="comment" class="List {{display=='comment'?'active':''}}">评论</view>
+    </scroll-view>
+    <view style="width: 100%;" wx:if="{{display=='introduction'}}">
+    <view style="width: 100%;margin-left:40rpx;margin-top:40rpx;">
+      <image style="width: 40rpx; height:40rpx;float:left;" src="/images/icons/usercenter-active.png"></image>
+        <view style="float:left;text-decoration: underline;margin-right: 20rpx;">
+        {{product.author.name}}
+        </view>
+        <view style="float:left;text-decoration: underline; margin-top: 7rpx; font-size: smaller; color:royalblue;">
+        @{{product.created}}
+        </view>
+    </view>
+    
+    <view style="width: 100%;margin-top:100rpx;margin-left: 40rpx;">
+        <view style="text-decoration: underline; font-size: small;">
+        {{product.author.description}}
+        </view>
+    </view>
+    
+    <view style="margin:0rpx 0rpx 0rpx 0rpx">
+      <view class="fixedbutton">
+        <image src="/images/resources/like.jpg"></image>
+        <text style="float:uset">{{product.like}}</text>
+      </view>
+      <view class="fixedbutton">
+        <image src="/images/resources/dislike.jpg"></image>
+        <text style="float:uset">{{product.dislike}}</text>
+      </view>
+      <view class="fixedbutton">
+        <image src="/images/resources/collect.jpg"></image>
+        <text style="float:uset">{{product.collection}}</text>
+      </view>
+      <view class="fixedbutton">
+        <image src="/images/resources/share.jpg"></image>
+        <text style="float:uset">{{product.share}}</text>
+      </view>
+    </view>
+    
+    </view>
+    
+    <view style="width: 100%;margin-top:10rpx;margin-left: 40rpx;"  wx:if="{{display=='introduction'}}">
+        <view style="text-decoration: underline; font-size: medium;">
+        相关推荐：
+        </view>
+    </view>
+    <view class="grid-container"  wx:if="{{display=='introduction'}}">
+      <view class="grid-item" wx:for="{{feed}}" wx:for-item="item">
+      <view style="display: inline-block; position: absolute; z-index: 999; margin:40rpx; color:white;">{{"《" + item.title + "》"}}</view>
+      <image src="{{item.image}}" bind:tap="productDetail" data-prodid="{{item.linkid}}"></image>
+      <text>{{item.comment}}</text>
+      <text style="font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline;">{{item.by}}</text>
+      </view>
+    </view>
+  </view>
+</scroll-view>

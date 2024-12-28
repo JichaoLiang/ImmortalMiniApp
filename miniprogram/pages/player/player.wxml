@@ -1,0 +1,29 @@
+<!--pages/player/player.wxml-->
+<view>
+    <video id="main_video" controls="" style="height: 1400rpx;width: 100%;" autoplay="true" src="{{videourl}}">
+      <cover-view wx:for="{{actionList}}" wx:index="i" wx:for-item="action1" wx:for-index="idx" wx:if="{{action1.show}}" wx:key="id" class="button button-3" style="position: absolute; margin-left:40rpx; margin-top:{{1200 - idx * 100}}rpx;z-index: 9999;" data-question="{{action1.text}}" data-id="{{action1.id}}" bind:tap="buttonaction">{{action1.title}}</cover-view>
+      
+      <cover-view id="top_bar" style="display: {{showloading?'block':'none'}};" class="div_top_bar">{{loadingmsg}}</cover-view>
+      <cover-view id="cover_box"  style="display: {{showloading?'block':'none'}};" class="div_cover_box"></cover-view>
+      <cover-image id="cover_img" mode="widthFix" style="display: {{showloading?'block':'none'}}; " class="div_bg_img_cover_box" src="{{product.images[0].url}}"></cover-image>
+      <cover-view id="div_replay" class="div_refresh_button" title="重新播放当前内容" bindsubmit="restartVideo();"></cover-view>
+      <!-- <audio id="bgm_audio" loop preload="auto" height="100" width="100">
+          <source type="audio/mpeg"></source>
+      </audio> -->
+    </video>
+      <cover-view id ="textbox_input_container" class="textbox_input_container" style="position:absolute; display: {{displayinput?'unset':'none;'}};">
+          <input id="tb_textinput" class="tb_textinput" type="text" bindinput="setchattext" placeholder="和我聊聊天吧..." value="" />
+          <input id="video_action_button" class="btn_submit" type="button" value="发送" />
+      </cover-view>
+    <!-- <view>
+      <view wx:for="{{actionList}}" wx:index="i" wx:for-item="action1" wx:for-index="idx" wx:if="{{action1.show}}" wx:key="id" class="button button-3" style="position: absolute; margin-left:40rpx; margin-top:{{1200 - idx * 100}}rpx;z-index: 9999;" data-question="{{action1.text}}" data-id="{{action1.id}}" bind:tap="buttonaction">{{action1.title}}</view>
+    </view> -->
+    <view id="debugbox_container" style="display: none;">
+        <text>nodeid: {{currentNode}}</text>
+        <view id="debugbox_nodeid"></view>
+        <text>nextlist: {{JSON.Stringfy(nextlist)}}</text>
+        <view id="debugbox_nextlist"></view>
+        <text>context: </text>
+        <view id="debugbox_context">{{JSON.Stringfy(context)}}</view>
+    </view>
+</view>

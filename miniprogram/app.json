@@ -1,0 +1,59 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/cases/cases",
+    "pages/logs/logs",
+    "pages/contact/contact",
+    "pages/examples/index",
+    "pages/exampleDetail/index",
+    "pages/web/index",
+    "pages/product/product",
+    "pages/profile/profile",
+    "pages/player/player"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "Immortal APP",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#8a8a8a",
+    "selectedColor": "#1AAD19",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/house.png",
+        "selectedIconPath": "images/house1.png"
+      },
+      {
+        "pagePath": "pages/examples/index",
+        "text": "分类",
+        "iconPath": "images/icons/goods.png",
+        "selectedIconPath": "images/icons/goods-active.png"
+      },
+      {
+        "pagePath": "pages/contact/contact",
+        "text": "消息",
+        "iconPath": "images/icons/examples.png",
+        "selectedIconPath": "images/icons/examples-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/icons/usercenter.png",
+        "selectedIconPath": "images/icons/usercenter-active.png"
+      }
+    ],
+    "position": "bottom"
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "lazyCodeLoading": "requiredComponents",
+  "miniApp": {
+    "useAuthorizePage": true,
+    "lazyCodeLoading": "requiredComponents"
+  }
+}
