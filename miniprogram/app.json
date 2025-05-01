@@ -1,4 +1,44 @@
 {
+  "static": [
+    {
+      "pattern": "pages/login/login.*",
+      "platforms": [
+        "mini-ios",
+        "mini-android",
+        "mini-weixin"
+      ]
+    }
+  ],
+  "mini-ios": {
+    "pages": [
+      "pages/index/index",
+      "pages/cases/cases",
+      "pages/logs/logs",
+      "pages/contact/contact",
+      "pages/examples/index",
+      "pages/exampleDetail/index",
+      "pages/web/index",
+      "pages/product/product",
+      "pages/profile/profile",
+      "pages/player/player",
+      "pages/login/login"
+    ]
+  },
+  "mini-android": {
+    "pages": [
+      "pages/index/index",
+      "pages/cases/cases",
+      "pages/logs/logs",
+      "pages/contact/contact",
+      "pages/examples/index",
+      "pages/exampleDetail/index",
+      "pages/web/index",
+      "pages/product/product",
+      "pages/profile/profile",
+      "pages/player/player",
+      "pages/login/login"
+    ]
+  },
   "pages": [
     "pages/index/index",
     "pages/cases/cases",
@@ -9,7 +49,10 @@
     "pages/web/index",
     "pages/product/product",
     "pages/profile/profile",
-    "pages/player/player"
+    "pages/player/player",
+    "pages/login/login",
+    "pages/showtext/showtext",
+    "pages/productlist/productlist"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -30,7 +73,7 @@
       },
       {
         "pagePath": "pages/examples/index",
-        "text": "分类",
+        "text": "关注",
         "iconPath": "images/icons/goods.png",
         "selectedIconPath": "images/icons/goods-active.png"
       },

@@ -1,7 +1,6 @@
 <!--pages/player/player.wxml-->
 <view>
-    <video id="main_video" controls="" style="height: 1400rpx;width: 100%;" autoplay="true" src="{{videourl}}">
-      <cover-view wx:for="{{actionList}}" wx:index="i" wx:for-item="action1" wx:for-index="idx" wx:if="{{action1.show}}" wx:key="id" class="button button-3" style="position: absolute; margin-left:40rpx; margin-top:{{1200 - idx * 100}}rpx;z-index: 9999;" data-question="{{action1.text}}" data-id="{{action1.id}}" bind:tap="buttonaction">{{action1.title}}</cover-view>
+    <video id="main_video" controls="" style="height: 1340rpx;width: 100%;" autoplay="true" muted="{{videomuted}}" src="{{videourl}}">
       
       <cover-view id="top_bar" style="display: {{showloading?'block':'none'}};" class="div_top_bar">{{loadingmsg}}</cover-view>
       <cover-view id="cover_box"  style="display: {{showloading?'block':'none'}};" class="div_cover_box"></cover-view>
@@ -11,6 +10,8 @@
           <source type="audio/mpeg"></source>
       </audio> -->
     </video>
+    
+    <view wx:for="{{actionList}}" wx:index="i" wx:for-item="action1" wx:for-index="idx" wx:if="{{action1.show}}" wx:key="id" class="button button-3" style="position: fixed; margin-left:40rpx; top:{{1150 - idx * 100}}rpx;z-index: 999;" data-question="{{action1.text}}" data-id="{{action1.id}}" bind:tap="buttonaction">{{action1.title}}</view>
       <cover-view id ="textbox_input_container" class="textbox_input_container" style="position:absolute; display: {{displayinput?'unset':'none;'}};">
           <input id="tb_textinput" class="tb_textinput" type="text" bindinput="setchattext" placeholder="和我聊聊天吧..." value="" />
           <input id="video_action_button" class="btn_submit" type="button" value="发送" />
@@ -18,6 +19,64 @@
     <!-- <view>
       <view wx:for="{{actionList}}" wx:index="i" wx:for-item="action1" wx:for-index="idx" wx:if="{{action1.show}}" wx:key="id" class="button button-3" style="position: absolute; margin-left:40rpx; margin-top:{{1200 - idx * 100}}rpx;z-index: 9999;" data-question="{{action1.text}}" data-id="{{action1.id}}" bind:tap="buttonaction">{{action1.title}}</view>
     </view> -->
+    <view class="comment-modal">
+      <view class="modal-content">
+        <view bind:tap="onlike" class="fixedbutton">
+          <image src="{{behaviorstatus.liked ? '/images/resources/liked.jpg':'/images/resources/like.jpg'}}"></image>
+          <text style="float:uset">{{product.like}}</text>
+        </view>
+        <view bind:tap="ondislike" class="fixedbutton">
+          <image src="{{behaviorstatus.disliked ? '/images/resources/disliked.jpg':'/images/resources/dislike.jpg'}}"></image>
+          <text style="float:uset">{{product.dislike}}</text>
+        </view>
+        <view bind:tap="oncollect" class="fixedbutton">
+          <image src="{{behaviorstatus.collected ? '/images/resources/collected.jpg':'/images/resources/collect.jpg'}}"></image>
+          <text style="float:uset">{{product.collection}}</text>
+        </view>
+        <button open-type="share" bind:tap="onshare" style="width: 150rpx; margin-left: 20rpx; background-color: white;" class="fixedbutton">
+            <image src="{{behaviorstatus.share ? '/images/resources/shared.jpg':'/images/resources/share.jpg'}}"></image>
+            <text style="float:uset">{{product.share}}</text>
+        </button>
+        <button bind:tap="showCommentModal" class="capsule-btn" style="width: 130rpx; margin-top:10rpx;">评论</button>
+      </view>
+    </view>
+    
+    <!-- 底部弹框 -->
+    <view class="comment-modal" wx:if="{{showComment}}">
+      <view class="modal-mask" catchtap="hideCommentModal"></view>
+      <view class="modal-content">
+        <view class="modal-header">
+          <text class="title">发表评论</text>
+          <text class="cancel-btn" catchtap="hideCommentModal">取消</text>
+        </view>
+        <view class="input-area">
+            <view class="comment-body">
+              <textarea 
+                class="comment-input" 
+                placeholder="请输入您的评论..." 
+                placeholder-class="placeholder"
+                focus="{{showComment}}"
+                bindinput="onCommentInput"
+                value="{{commentText}}"
+              ></textarea>
+            <!-- 分隔线（只在有图片时显示） -->
+            <view class="divider"></view>
+            <!-- 右侧图片（如果有） -->
+            <view class="image-container">
+              <image class="comment-image" src="{{dialog.snapshotid}}" mode="aspectFill"></image>
+            </view>
+          </view>
+        </view>
+        <view class="modal-footer">
+          <button 
+            class="capsule-btn" 
+            style="margin-left: 175rpx;"
+            disabled="{{trimText.length == 0}}" 
+            bindtap="sendComment"
+          >发送</button>
+        </view>
+      </view>
+    </view>
     <view id="debugbox_container" style="display: none;">
         <text>nodeid: {{currentNode}}</text>
         <view id="debugbox_nodeid"></view>

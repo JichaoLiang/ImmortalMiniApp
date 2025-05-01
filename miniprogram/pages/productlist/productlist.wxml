@@ -1,0 +1,16 @@
+<!--pages/productlist/productlist.wxml-->
+<view class="title-bar">
+  <view class="title-text">
+    {{title}}
+  </view>
+</view>
+<view class="view-content">
+<view class="grid-container">
+  <view class="grid-item" wx:for="{{feedstream}}" wx:for-item="item">
+  <view style="display: inline-block; position: absolute; z-index: 999; margin:40rpx; color:white;">{{"《" + item.name + "》"}}</view>
+  <image src="{{item.images[0].url}}" bind:tap="productDetail" data-prodid="{{item.id}}"></image>
+  <text class="single-line-ellipsis">{{item.description}}</text>
+  <text style="font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline;">{{item.author.name}}</text>
+  </view>
+</view>
+</view>

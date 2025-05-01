@@ -21,7 +21,11 @@
     "compileHotReLoad": false,
     "skylineRenderEnable": true,
     "condition": true,
-    "es6": true
+    "es6": true,
+    "swc": false,
+    "disableSWC": true,
+    "compileWorklet": false,
+    "autoConditionalCompile": true
   },
   "simulatorType": "wechat",
   "condition": {},
@@ -40,5 +44,7 @@
   "simulatorPluginLibVersion": {
     "wxext14566970e7e9f62": "3.6.5-10"
   },
-  "projectArchitecture": "multiPlatform"
+  "projectArchitecture": "multiPlatform",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
+  "donut": true
 }

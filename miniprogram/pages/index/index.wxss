@@ -16,10 +16,10 @@ page {
 }
 
 .fixedbutton{
-  width:70rpx;
+  width:100rpx;
   float: left;
   padding: 40rpx;
-  font-size: 30rpx;
+  font-size: 35rpx;
   align-items: center;
 }
 

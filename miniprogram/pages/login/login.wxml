@@ -1,0 +1,70 @@
+
+<view class="donutLogin__app-info">
+  <image class="donutLogin__app-icon" src="{{appIcon}}"></image>
+  <view class="donutLogin__app-name">{{appName}}</view>
+</view>
+
+<!-- <view class="donutLogin__app-info">
+  <button open-type="chooseAvatar" class="donutLogin__app-icon" ></image>
+  <input type="nickname" class="donutLogin__app-name" placeholder="输入您的昵称">{{appName}}</view>
+</view> -->
+<!-- #if ANDROID || IOS -->
+<view class="donutLogin__app-input">
+  <view class="donutLogin__app-label">点击上传头像：</view>
+  <button bind:tap="choosePhoto" class="donutLogin__app-head">
+    <image class="avatar" src="{{defaultAvatar}}"></image>
+    <view class="mask-avatar" style="{{noregist?'':'display:none'}}"></view>
+  </button>
+  <view style="display: flex; justify-content: center; margin: 15rpx;">
+    <checkbox-group bindchange="onlogincheckboxchange">
+      <checkbox id="ckbx-haveaccount" value="noregist" ></checkbox><label for="ckbx-haveaccount">已经注册，直接登录</label>
+    </checkbox-group>
+  </view>
+  <!-- <view class="donutLogin__app-label">输入您的昵称</view> -->
+  <input class="underline-input" style="{{noregist?'display:none':''}}" bindinput="oninput" placeholder="<输入您的昵称>"></input>
+  <!-- <view class="donutLogin__app-label">手机号码用于查看定制内容</view> -->
+  <input class="underline-input" style="{{noregist?'display:none':''}}" bindinput="oninputphoneNumber" placeholder="<手机号码用于查看定制内容>"></input>
+  <input class="underline-input" style="{{noregist?'display:none':''}}" bindinput="oninputsignature" placeholder="<个性签名>"></input>
+  <!-- <button class="donutLogin__app-avatar" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">{{phonenumber}}</button> -->
+</view>
+<!-- #elif MP -->
+<view class="donutLogin__app-input">
+  <view class="donutLogin__app-label">点击上传头像：</view>
+  <button bind:tap="choosePhoto" class="donutLogin__app-head">
+    <image class="avatar" src="{{defaultAvatar}}"></image>
+  </button>
+  <!-- <view class="donutLogin__app-label">输入您的昵称</view> -->
+  <input class="underline-input" bindinput="oninput" placeholder="输入您的昵称"></input>
+  <!-- <view class="donutLogin__app-label">手机号码用于查看定制内容</view> -->
+  <input class="underline-input" bindinput="oninputphoneNumber" placeholder="手机号码用于查看定制内容"></input>
+  <input class="underline-input" bindinput="oninputsignature" placeholder="<个性签名>"></input>
+  <!-- <button class="donutLogin__app-avatar" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">{{phonenumber}}</button> -->
+</view>
+<!-- #endif  -->
+
+<view class="donutLogin__login-action">
+  <!-- #if ANDROID || IOS -->
+  <button  open-type="getUserInfo" class="donutLogin__login-button" type="primary" bindtap="onTapWeixinMiniProgramLogin" disabled="{{!readyToLogin}}">微信小程序登录</button>
+  <!-- #elif MP -->
+  <button 
+    open-type="getUserInfo" 
+    bindgetuserinfo="onGetUserInfo"
+    bindtap="handleLogin"
+    disabled="{{!readyToLogin}}">微信小程序登录</button>
+  <!-- #endif  -->
+  <checkbox-group style="{{noregist?'display:none':''}}" bindchange="onCheckboxChange">
+    <label class="donutLogin__checkbox-container">
+      <checkbox class="donutLogin__checkbox" checked="{{checkedAgree}}" />
+      <span class="donutLogin__checkbox-label"></span>
+      <span class="donutLogin__checkbox-text">
+        阅读并同意
+        <span catchtap="onShowAgreement" data-idx="0" style="color: #576b95;">
+          《用户协议》
+        </span>
+        <span catchtap="onShowAgreement" data-idx="1" style="color: #576b95;">
+          《隐私政策》
+        </span>
+      </span>
+    </label>
+  </checkbox-group>
+</view>

@@ -5,18 +5,21 @@
         <!-- <view style="color: aliceblue; z-index: 99999; position: absolute; bottom:40rpx; left:40rpx;" bindtap="showTip" data-url='{{item.linkid}}'>{{item.title}}</view> -->
         <view style="position: absolute; margin:40rpx; z-index: 999; font-weight: 900;color: white; font-size:x-large;">{{"《" + product.name + "》"}}</view>
         <view style="position: absolute; max-width: 90%; margin-top:120rpx; margin-left: 40rpx; z-index: 999; font-weight: 400;color: white; ">{{product.description}}</view>
-        <button type="default" style="position: absolute; margin-left:40rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: rgb(20, 19, 19); background-color: rgb(243, 148, 40); " bind:tap="play">从头开始</button>
-        <button type="default" style="position: absolute; margin-left:280rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: rgb(20, 19, 19); background-color: rgb(192, 243, 199); " bind:tap="continue">断点继续</button>
-        <button type="default" style="position: absolute; margin-left:520rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: {{cachebuttondisable?'gray': 'rgb(20, 19, 19)'}}; background-color: rgb(181, 214, 63); " disabled="{{cachebuttondisable}}" bind:tap="cacheproduct">{{cachetext}}</button>
+        <button type="default" style="position: absolute; margin-left:40rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: rgb(20, 19, 19); background-color: rgb(243, 148, 40); border-radius: 12rpx; " bind:tap="play">从头开始</button>
+        <button type="default" style="position: absolute; margin-left:280rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: rgb(20, 19, 19); background-color: rgb(192, 243, 199); border-radius: 12rpx;" bind:tap="continue">断点继续</button>
+        <button type="default" style="position: absolute; margin-left:520rpx; font-size: 0.7rem; margin-top:350rpx; width: 200rpx; z-index: 999; font-weight: 700;color: {{cachebuttondisable?'gray': 'rgb(20, 19, 19)'}}; background-color: rgb(181, 214, 63); border-radius: 12rpx;" disabled="{{cachebuttondisable}}" bind:tap="cacheproduct">{{cachetext}}</button>
         <image mode="aspectFill" style="width: 100%; opacity: 0.7;" src="{{product.images[0].url}}"></image>
     </view>
-    <scroll-view show-scrollbar="true" scroll-x="true" style='background-color:rgb(219, 223, 226) ; height: 40px; display: flex; white-space:nowrap;flex-direction: column;'>
-      <view style="border-radius: 5px; margin:2px; font-size: 30rpx;padding: 18.8rpx;display:inline-block;" bindtap="switchtab" data-id="introduction" class="List {{display=='introduction'?'active':''}}">简介</view>
-      <view style="border-radius: 5px; margin:2px; font-size: 30rpx;padding: 18.8rpx;display:inline-block;" bindtap="switchtab" data-id="comment" class="List {{display=='comment'?'active':''}}">评论</view>
-    </scroll-view>
+    
+    <view scroll-x="true" class="tabs" style="display: flex; ">
+      <view bindtap="switchtab" data-id="introduction" class="tab-item {{display=='introduction'?'active':''}}">简介
+      <view class="tab-indicator"></view></view>
+      <view bindtap="switchtab" data-id="comment" class="tab-item {{display=='comment'?'active':''}}">评论({{behaviorstatus.commentcount}})
+      <view class="tab-indicator"></view></view>
+    </view>
     <view style="width: 100%;" wx:if="{{display=='introduction'}}">
-    <view style="width: 100%;margin-left:40rpx;margin-top:40rpx;">
-      <image style="width: 40rpx; height:40rpx;float:left;" src="/images/icons/usercenter-active.png"></image>
+    <view style="width: 100%;margin-left:40rpx;margin-top:40rpx; ">
+      <image style="width: 50rpx; height:50rpx;float:left;border-radius: 25rpx; margin-right: 10rpx;" src="{{product.author.image}}"></image>
         <view style="float:left;text-decoration: underline;margin-right: 20rpx;">
         {{product.author.name}}
         </view>
@@ -26,28 +29,28 @@
     </view>
     
     <view style="width: 100%;margin-top:100rpx;margin-left: 40rpx;">
-        <view style="text-decoration: underline; font-size: small;">
+        <view style="text-decoration: underline; font-size: small;max-width: 90%;">
         {{product.author.description}}
         </view>
     </view>
     
     <view style="margin:0rpx 0rpx 0rpx 0rpx">
-      <view class="fixedbutton">
-        <image src="/images/resources/like.jpg"></image>
+      <view bind:tap="onlike" class="fixedbutton">
+        <image src="{{behaviorstatus.liked ? '/images/resources/liked.jpg':'/images/resources/like.jpg'}}"></image>
         <text style="float:uset">{{product.like}}</text>
       </view>
-      <view class="fixedbutton">
-        <image src="/images/resources/dislike.jpg"></image>
+      <view bind:tap="ondislike" class="fixedbutton">
+        <image src="{{behaviorstatus.disliked ? '/images/resources/disliked.jpg':'/images/resources/dislike.jpg'}}"></image>
         <text style="float:uset">{{product.dislike}}</text>
       </view>
-      <view class="fixedbutton">
-        <image src="/images/resources/collect.jpg"></image>
+      <view bind:tap="oncollect" class="fixedbutton">
+        <image src="{{behaviorstatus.collected ? '/images/resources/collected.jpg':'/images/resources/collect.jpg'}}"></image>
         <text style="float:uset">{{product.collection}}</text>
       </view>
-      <view class="fixedbutton">
-        <image src="/images/resources/share.jpg"></image>
-        <text style="float:uset">{{product.share}}</text>
-      </view>
+      <button open-type="share" bind:tap="onshare" style="width: 200rpx; margin-left: 40rpx; background-color: white;" class="fixedbutton">
+          <image src="{{behaviorstatus.share ? '/images/resources/shared.jpg':'/images/resources/share.jpg'}}"></image>
+          <text style="float:uset">{{product.share}}</text>
+      </button>
     </view>
     
     </view>
@@ -63,6 +66,86 @@
       <image src="{{item.image}}" bind:tap="productDetail" data-prodid="{{item.linkid}}"></image>
       <text>{{item.comment}}</text>
       <text style="font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline;">{{item.by}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{display=='comment'}}" style="width: 100%;">
+      <view wx:if="{{comments.length==0}}" style="align-items: center; height: 800rpx; padding-top:50rpx; padding-left: 80rpx;">
+        <image mode="aspectFill" src="{{nocommenticon}}"></image>
+      </view>
+      <view wx:if="{{comments.length>0}}" style="width: 100%;margin: 10rpx;">
+        <scroll-view class="comment-list" style="width: 95%;margin: 10rpx; ">
+          <block wx:for="{{comments}}" wx:key="id" style="width: 100%;">
+            <view class="comment-card {{item.hasImage ? 'with-image' : ''}}">
+              <view class="comment-body {{item.hasImage ? 'with-image' : ''}}">
+                <!-- 左侧评论内容 -->
+              <!-- 用户信息 -->
+                <view style="display: block;{{item.hasimage?'width:450rpx;':''}}">
+                  <view class="user-info">
+                    <image class="avatar" src="{{item.avatar}}"></image>
+                    <view class="user-meta">
+                      <text class="username">{{item.username}}</text>
+                      <text class="time">{{item.time}}</text>
+                    </view>
+                  </view>
+                  <view class="comment-content" style="{{item.hasimage?'height:150rpx;':''}}">{{item.content}}</view>
+                  <!-- 操作栏 -->
+                  <view class="action-bar">
+                    <!-- <view class="action-item">
+                      <image class="action-icon" src="/images/resources/like.jpg"></image>
+                      <text>{{item.likeCount}}</text>
+                    </view> -->
+                    <view class="action-item" data-id="{{item.id}}" data-token="{{item.token}}" data-name="{{item.username}}" bind:tap="showCommentModal">
+                      <image class="action-icon" src="/images/resources/share.jpg"></image>
+                      <text>回复</text>
+                    </view>
+                  </view>
+                </view>
+                <!-- 分隔线（只在有图片时显示） -->
+                <view wx:if="{{item.hasimage}}" class="divider"></view>
+                <!-- 右侧图片（如果有） -->
+                <view wx:if="{{item.hasimage}}" class="image-container">
+                  <image class="comment-image" src="{{item.image}}" mode="aspectFill"></image>
+                </view>
+              </view>
+        
+              
+            </view>
+          </block>
+        </scroll-view>
+      </view>
+      <view class="commentbar" style="position: fixed; margin-left:auto;margin-right: auto; bottom:50rpx; left:200rpx; z-index: 999;">
+        <button bind:tap="showCommentModal" class="capsule-btn">点击发表评论</button>
+      </view>
+
+      <!-- 底部弹框 -->
+      <view class="comment-modal" wx:if="{{showComment}}">
+        <view class="modal-mask" catchtap="hideCommentModal"></view>
+        <view class="modal-content">
+          <view class="modal-header">
+            <text class="title">发表评论</text>
+            <text class="cancel-btn" catchtap="hideCommentModal">取消</text>
+          </view>
+          <view class="input-area">
+            <textarea 
+              class="comment-input" 
+              placeholder="请输入您的评论..." 
+              placeholder-class="placeholder"
+              auto-height
+              focus="{{showComment}}"
+              bindinput="onCommentInput"
+              value="{{commentText}}"
+            ></textarea>
+          </view>
+          <view class="modal-footer">
+            <button 
+              class="capsule-btn" 
+              style="margin-left: 175rpx;"
+              disabled="{{trimText.length == 0}}" 
+              bindtap="sendComment"
+            >发送</button>
+          </view>
+        </view>
       </view>
     </view>
   </view>

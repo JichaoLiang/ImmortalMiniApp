@@ -1,2 +1,63 @@
 <!--pages/profile/profile.wxml-->
-<text>pages/profile/profile.wxml</text>
+<view class="container">
+  <view class="card">
+    <!-- 整体采用flex布局，头像在左，信息在右 -->
+    <view class="card-content">
+      <!-- 左侧头像 -->
+      <view class="avatar-section">
+        <image class="avatar" src="{{avatar}}" mode="aspectFill"></image>
+      </view>
+      
+      <!-- 右侧信息区域 -->
+      <view class="info-section">
+        <view class="name-line">
+          <text class="nickname">{{nickName}}</text>
+        </view>
+        
+        <view class="id-line">
+          <view class="user-id single-line-ellipsis" bind:tap="onuseridtap">{{userid}}</view>
+        </view>
+        <view class="phone-line">
+          <text class="phone">{{phonenumber}}</text>
+        </view>
+        
+        <view class="signature">
+          <text>{{signature}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 底部装饰线 -->
+    <view class="divider"></view>
+  </view>
+  <view class="tabs">
+    <block wx:for="{{tabs}}" wx:key="id">
+      <view 
+        class="tab-item {{activeTab === item.id ? 'active' : ''}}" 
+        bindtap="switchTab" 
+        data-id="{{item.id}}"
+      >
+        <text>{{item.title}}</text>
+        <view class="tab-indicator"></view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 内容区域 - 使用swiper实现滑动切换 -->
+  <swiper 
+    current="{{activeTab}}" 
+    duration="300" 
+    bindchange="swiperChange"
+    class="swiper-container"
+  >
+    <block wx:for="{{tabs}}" wx:key="id">
+      <swiper-item>
+        <view class="content">
+          <!-- 这里是每个Tab页的具体内容 -->
+          <view class="content-title">{{item.contentTitle}}</view>
+          <view class="content-body">{{item.contentText}}</view>
+        </view>
+      </swiper-item>
+    </block>
+  </swiper>
+</view>

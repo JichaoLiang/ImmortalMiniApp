@@ -2,10 +2,14 @@
 // 获取应用实例
 const app = getApp<IAppOption>()
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
-var feed = require('../../utils/products.js')
+import { resource } from '../../utils/resources'
+import * as API from '../../utils/serverAPI'
+import { platform, listVideoIdByProductId, listAudioIdByProductId, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, requireUserInfo, weixinlogin } from 
+"../../utils/util"
 
 Component({
   data: {
+    feedstream: [],
     headbar:{
       images:[
         {
@@ -25,8 +29,7 @@ Component({
     categorys:[
       {
         title: "推荐",
-        id: "1",
-        feed: feed.feed
+        id: "1"
       },
       {
         title: "密室逃脱",
@@ -61,32 +64,32 @@ Component({
 
     fixedbutton:[
       {
-        icon:"/images/Icon1.png",
+        icon:"/images/Icon2.png",
         title:"热门",
-        link:"123"
+        link:"../productlist/productlist?method=Hot"
       },
       // {
       //   icon:"/images/Icon2.png",
       //   title:"最新",
       //   link:"456"
       // },
-      {
-        icon:"/images/Icon3.png",
-        title:"关注",
-        link:"789"
-      },
+      // {
+      //   icon:"/images/Icon3.png",
+      //   title:"关注",
+      //   link:"789"
+      // },
       {
         icon:"/images/Icon4.png",
         title:"收藏",
         link:"1234"
       },
       {
-        icon:"/images/Icon5.png",
+        icon:"/images/Icon3.png",
         title:"社区",
         link:"567"
       },
       {
-        icon:"/images/Icon6.png",
+        icon:"/images/Icon5.png",
         title:"创作",
         link:"5672"
       },
@@ -102,6 +105,13 @@ Component({
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
   },
   methods: {
+    onfixedbuttontap(evt:any){
+      var link = evt.currentTarget.dataset.link
+      // console.log(evt)
+      wx.navigateTo({
+        url: link,
+      })
+    },
     // 事件处理函数
     toCases() {
       console.log(123)
@@ -127,6 +137,39 @@ Component({
     productDetail(evt:any){
       var prodid = evt.target.dataset.prodid
       wx.navigateTo({url: "/pages/product/product?productid=" + prodid})
+    },
+    onLoad(options){
+      console.log(resource.currentplatform)
+      fetchFeedList((feed:any)=>{
+        for (var i = 0; i < feed.length; i++){
+          feed[i].image = MapImageUrl(feed[i].image)
+        }
+        console.log(feed)
+        this.setData({feedstream: feed})
+      }, (feed:any)=>{})
+
+      var prodid = options.productid
+      if(prodid && resource.user.id.length > 0){
+        wx.navigateTo({ 
+          url: '../product/product?productid='+prodid
+        })
+      }
+    },
+    onShow(options){
+      /* @if env=='miniprogram' */
+      console.log('func: requireUserInfo')
+      requireUserInfo((weisinid)=>{
+        console.log('callback: requireUserInfo')
+        console.log("got weisinid:" + weisinid)
+        if(resource.logintempuser.id == ""){
+          console.log("got weisinid: set to temp user: " + weisinid)
+          resource.logintempuser.id = weisinid
+        }
+        // console.log('wxid: ' + weisinid)
+        // weixinlogin(weisinid,(userinfo)=>{
+        // })
+      }, ()=>{})
+      /* endif */
     }
   },
 })

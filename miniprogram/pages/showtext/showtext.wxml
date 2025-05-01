@@ -1,0 +1,8 @@
+<!--pages/showtext/showtext.wxml-->
+<view class="view-title">
+  {{title}}
+</view>
+<view class="view-content">
+<rich-text>{{content}}</rich-text>
+  
+</view>

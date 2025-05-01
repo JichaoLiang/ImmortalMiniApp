@@ -1,0 +1,83 @@
+/* pages/productlist/productlist.wxss */
+
+.view-title{
+  text-align: center;
+  font-size: xx-large;
+  position: absolute;
+  height: 100rpx;
+  width: 100%;
+}
+
+
+.grid-container{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 16rpx;
+  justify-content: space-between;
+}
+
+.grid-item{
+  display:flex;
+  width: 49%;
+  flex-direction: column;
+  box-sizing:  border-box;
+  margin-top: 16rpx;
+}
+
+.grid-item > image {
+  width: 95%;
+  margin: 5rpx;
+  border-radius:  15rpx 15rpx 15rpx 15rpx;
+}
+
+.view-content{
+  position: absolute;
+  top: 120rpx;
+  height: 100%;
+  overflow-y: scroll;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  background-color: #f8f9fa;
+}
+/* 标题栏容器 - 带浅色背景 */
+.title-bar {
+  width: 100%;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+  background-color: #f8f9fa; /* 非常浅的灰蓝色背景 */
+  position: relative;
+  margin-bottom: 24rpx;
+  border-radius: 12rpx 12rpx 0 0; /* 顶部轻微圆角 */
+}
+
+/* 标题文字样式 - 带主色调 */
+.title-text {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #2c3e50; /* 深蓝灰色文字 */
+  line-height: 1.4;
+  font-size: x-large;
+}
+
+/* 分界线样式 - 带主色调 */
+.title-bar::after {
+  content: "";
+  position: absolute;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: 0;
+  height: 2px;
+  background-color: #3498db; /* 蓝色分界线 */
+  transform: scaleY(0.5);
+}
+/* 可选：标题前的装饰线 */
+.title-text::before {
+  content: "";
+  display: inline-block;
+  width: 8rpx;
+  height: 36rpx;
+  background-color: #3498db; /* 与分界线同色 */
+  margin-right: 16rpx;
+  vertical-align: middle;
+}
+

@@ -1,0 +1,218 @@
+import * as config from './config'
+import { resource } from './resources';
+import * as utils from  './util'
+
+export const callserver = (routerpath:string, parameters:any, callback:any, failedcallback:any=(err)=>{}, namespace = 'immortalAPP')=>{
+  var url = config.baseurl + namespace + '/' + routerpath;
+  var firstparam = true;
+  for (const key in parameters) {
+    if (parameters.hasOwnProperty(key)) { // 确保只遍历对象自身的属性
+      if (firstparam){
+        url += '?'
+        firstparam = false
+      }
+      else{
+        url += '&'
+      }
+      url += key + '=' + escape(parameters[key])
+    }
+  }
+  console.log("API access: ")
+  console.log(url)
+  wx.request({
+    url: url, // 开发者服务器接口地址
+    method: 'GET', // HTTP 请求方法，默认为 GET
+    header: {
+      'content-type': 'application/json' // 设置请求的 header，默认为 application/json
+    },
+    success(res) {
+      // console.log(res.data); // 接口调用成功的回调函数
+      var code = res.statusCode
+      console.log(code)
+      if (code != 200){
+        failedcallback(res);
+      }
+      else{
+        var result = res.data
+        callback(result)
+      }
+    },
+    fail(err) {
+      console.error(err); // 接口调用失败的回调函数
+      failedcallback(err);
+    },
+    complete() {
+    }
+    });
+}
+
+export const newuser = (weixinid:string, img:string, nicknam:string, phonenumber:string, signature:string, callback:any)=>{
+  console.log('创建user')
+  callserver('NewUser', {
+    token: weixinid,
+    imagekey: img,
+    nickname: nicknam,
+    phonenumber:phonenumber,
+    signature:signature
+  }, callback)
+}
+
+export const fetchUserInfoByToken = (token: string, callback:any, failedcallback: any) =>{
+  callserver('GetUserInfo', {
+    token: token,
+  }, callback, failedcallback)
+}
+
+export const getTokenbyTempWxid = (tempwxid, isAPP, callback, failcallback)=>{
+  callserver('GetTokenByWxid', {
+    wxid: tempwxid,
+    isAPP: isAPP
+  }, callback, failcallback)
+}
+
+export const uploadfile = (filepath:string, extname:string, callback:any)=>{
+  console.log(config.baseurl + 'FileUpload?extname=' + extname)
+  wx.uploadFile({
+    url: config.baseurl + 'ImmortalAPP/FileUpload?extname=' + extname, // 替换为你的上传接口
+    filePath: filepath,
+    name: 'file', // 后端接收的文件字段名
+    formData: {
+      'user': 'test' // 可以添加额外的表单数据
+    },
+    success: (res) => {
+      if (res.statusCode === 200) {
+        var fileid = JSON.parse(res.data).result
+        callback(fileid)
+        // 可以在这里处理返回的数据
+        console.log('上传成功:', res.data);
+      } else {
+        console.log(res)
+        console.log('上传失败:', res.data);
+      }
+    },
+    fail: (err) => {
+      console.error('上传失败:', err);
+    }
+  });
+}
+
+export const GetProductFeed = (method:string, success:any, failed:any, skip:number, take:number)=>{
+  if(!method){
+    method = "Hot"
+  }
+  if(!skip){
+    skip=0
+  }
+  if(!take){
+    take=16
+  }
+  var token = resource.user.id
+  callserver("GetProductFeed",{
+    method: method,
+    token:token,
+    skip:skip,
+    take:take
+  }, success, failed)
+}
+
+export const GetHotProductFeed = (success:any, failed:any, skip:number, take:number)=>{
+  GetProductFeed("Hot", success, failed, skip, take)
+}
+
+export const GetProductByPackageID = (id:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("GetProductByPackageID", {
+    id: id,
+    token:token,
+  }, (resp)=>{
+    var data = resp.data
+    if(data.length == 0){
+      wx.showToast({
+        title: "没有找到当前作品信息",
+        icon: "error",
+        duration: 2000,
+      })
+      return
+    }
+    resource.currentProduct = data[0]
+    success(data[0])
+  }, failed)
+}
+
+// behavior
+export const getC2PBehavior = (productid: string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("GetBehaviorInfoC2P", {
+    productid: productid,
+    token: token
+  }, success, failed)
+}
+export const GetProductBehaviorInfo = (productid: string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("GetProductBehaviorInfo", {
+    productid: productid,
+    token: token
+  }, success, failed)
+}
+
+export const like = (productid:string, success:any, failed:any, undo:boolean=false)=>{
+  var token = resource.user.id
+  callserver("Like",{
+    token: token,
+    productid: productid,
+    undo: undo
+  },success, failed)
+}
+
+export const dislike = (productid:string, success:any, failed:any, undo:boolean=false)=>{
+  var token = resource.user.id
+  callserver("Dislike",{
+    token: token,
+    productid: productid,
+    undo: undo
+  },success, failed)
+}
+
+export const collect = (productid:string, success:any, failed:any, undo:boolean=false)=>{
+  var token = resource.user.id
+  callserver("Collect",{
+    token: token,
+    productid: productid,
+    undo: undo
+  },success, failed)
+}
+
+export const share = (productid:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("Share",{
+    token: token,
+    productid: productid,
+  },success, failed)
+}
+
+export const comment = (productid:string, content:string, replyuser: string, nodeid:string, undo:boolean, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("Comment",{
+    token: token,
+    productid: productid,
+    content:content,
+    replyuser: replyuser,
+    nodeid: nodeid,
+    undo: undo
+  },success, failed)
+}
+
+export const listcomment = (productid:string, success:any, failed:any)=>{
+  callserver("listcomments",{
+    productid: productid,
+  },(data:any)=>{success(data.data)}, failed)
+}
+
+export const fetchSnapshotByVideoid = (productid: string, videoid:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("GetSnapshotByVideoId",{
+    packageid: productid,
+    videoid: videoid,
+    token: token
+  },(data:any)=>{success(data.data)}, failed)
+}

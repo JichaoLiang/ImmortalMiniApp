@@ -13,8 +13,8 @@
         </swiper>
     </view>
     <view style="float:left;">
-      <view class="fixedbutton" wx:for="{{fixedbutton}}" wx:key="title" wx:for-item="item">
-        <image src="{{item.icon}}"></image>
+      <view class="fixedbutton" wx:for="{{fixedbutton}}" wx:key="title" wx:for-item="item" bind:tap="onfixedbuttontap" data-link="{{item.link}}">
+        <image mode="scaleToFill" src="{{item.icon}}"></image>
         <text style="float:uset">{{item.title}}</text>
       </view>
     </view>
@@ -22,7 +22,7 @@
       <view style="border-radius: 5px; margin:2px; font-size: 12px;padding: 18.8rpx;display:inline-block;" wx:for="{{categorys}}" wx:key="title" wx:for-item="item"  data-cateid="{{item.id}}" bindtap="showCate" class="List {{selectedcategory==item.id?'active':''}}">{{item.title}}</view>
     </scroll-view>
     <view class="grid-container" wx:if="{{selectedcategory=='1'?true:false}}">
-      <view class="grid-item" wx:for="{{categorys[0].feed}}" wx:for-item="item">
+      <view class="grid-item" wx:for="{{feedstream}}" wx:for-item="item">
       <view style="display: inline-block; position: absolute; z-index: 999; margin:40rpx; color:white;">{{"《" + item.title + "》"}}</view>
       <image src="{{item.image}}" bind:tap="productDetail" data-prodid="{{item.linkid}}"></image>
       <text>{{item.comment}}</text>

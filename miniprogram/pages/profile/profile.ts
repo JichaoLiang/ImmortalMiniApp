@@ -1,3 +1,6 @@
+import * as utils from "../../utils/util"
+import * as API from "../../utils/serverAPI"
+import * as resource from '../../utils/resources'
 // pages/profile/profile.ts
 Page({
 
@@ -5,14 +8,87 @@ Page({
    * 页面的初始数据
    */
   data: {
+    isMySelf: true,
+    userid: resource.resource.user.id,
+    avatar: utils.MapImageUrl(resource.resource.user.imgid),
+    phonenumber: resource.resource.user.phonenumber,
+    nickName: resource.resource.user.nickname,
+    signature: resource.resource.user.signature,
+    platform: utils.platform,
+
+    activeTab: 0, // 当前激活的Tab索引
+    tabs: [
+      {
+        id: 0,
+        title: "动态",
+        contentTitle: "欢迎来到首页",
+        contentText: "这里是首页的内容区域，可以展示各种信息..."
+      },
+      {
+        id: 1,
+        title: "作品",
+        contentTitle: "分类浏览",
+        contentText: "这里是分类页面，可以按类别查看内容..."
+      },
+      {
+        id: 2,
+        title: "关注",
+        contentTitle: "分类浏览",
+        contentText: "这里是分类页面，可以按类别查看内容..."
+      },
+      {
+        id: 3,
+        title: "粉丝",
+        contentTitle: "分类浏览",
+        contentText: "这里是分类页面，可以按类别查看内容..."
+      },
+      {
+        id: 4,
+        title: "足迹",
+        contentTitle: "分类浏览",
+        contentText: "这里是分类页面，可以按类别查看内容..."
+      }
+    ],
+  },
+  getPhoneNumber(e) {
+    if (e.detail.code) {
+      // 将code发送到后端解密获取手机号
+      wx.request({
+        url: '你的服务器地址',
+        data: { code: e.detail.code },
+        success(res) {
+          console.log('手机号:', res.data.phoneNumber)
+        }
+      })
+    }
+  },
+  onEditorInput(e){
 
   },
+  onStatusChange(e){
 
+  },
+  gologin(){
+    wx.navigateTo({url:"../login/login"})
+  },
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad() {
-
+  onLoad(options) {
+    var usertoken = options.usertoken
+    if(usertoken && resource.resource.user.id != usertoken){
+      this.setData({isMySelf: false})
+      API.fetchUserInfoByToken(usertoken, (result)=>{
+        
+      },(err:any)=>{
+        wx.showToast({
+          title: "加载用户信息失败",
+          icon: "error",
+          duration: 2000,
+        })
+        wx.navigateBack()
+      })
+    }
   },
 
   /**
@@ -26,7 +102,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
   },
 
   /**
@@ -62,5 +137,31 @@ Page({
    */
   onShareAppMessage() {
 
-  }
+  },
+  onuseridtap(evt){
+    wx.setClipboardData({
+      data: this.data.userid,
+      success (res) {
+        wx.showToast({
+          title: "id已复制", //弹框内容
+          icon: 'success', //弹框模式
+          duration: 2000 })
+      }
+    })
+  },
+    // 切换Tab
+    switchTab(e) {
+      const tabId = e.currentTarget.dataset.id;
+      this.setData({
+        activeTab: tabId
+      });
+    },
+  
+    // Swiper滑动切换
+    swiperChange(e) {
+      const current = e.detail.current;
+      this.setData({
+        activeTab: current
+      });
+    }
 })

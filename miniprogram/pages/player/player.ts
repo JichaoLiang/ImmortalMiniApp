@@ -1,9 +1,13 @@
 import { getAssetLoaderTypes } from "XrFrame/loader/AssetLoader"
-import { fileexists, fetchAideo, fetchVideo, fetchVideos, getCheckpointfilepathbyPackageiId, getProdById } from "../../utils/util"
+import { baseurl } from "../../utils/config"
+import { fileexists, fetchAideo, fetchVideo, fetchVideos, getCheckpointfilepathbyPackageiId, getProdById, MapImageUrl } from "../../utils/util"
+import * as API from "../../utils/serverAPI"
+import { resource } from "../../utils/resources"
 
 // var ResourceManager = require('../../utils/resourceStore.ts')
 var audio = wx.createInnerAudioContext()
-audio.volume = 0.1
+audio.volume = 0.3
+audio.loop = true
 var query = wx.createSelectorQuery()
 var temp = 0
 Page({
@@ -12,11 +16,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    videourl: "http://39.105.153.38/Immortal/GetVideo?packageid=xujiangv15&videoid=immortal_2024_8_9_21_19_34_817",
+    videourl: "",
+    videomuted: false,
     continue: false,
     currentNode: "",
     packageId: "",
     context: {},
+    preloadcache: {},
     nextlist: "",
     actionList: [],
 
@@ -26,14 +32,202 @@ Page({
     videoid: "",
     bgmid: "",
     textinput: "",
-    showloading: false,
-    loadingmsg: "",
+    showloading: true,
+    loadingmsg: "加载中",
     autopass: false,
     displayinput: false,
     defaultnext: "",
     actionclicktimestamp: 0,
     loadingtime: 2000,
     listeningflag: true,
+
+    // 评论弹框
+    showComment:false,
+    commentText: "",
+    trimText: "",
+    
+    // 行为状态
+    behaviorstatus:{
+      liked: false,
+      disliked: false,
+      collected: false,
+      share:false,
+      commentcount: 0,
+    },
+    productid: "",
+
+    snapshotNodeid :"",
+    snapshotid: "",
+    dialog:{
+      snapshotNodeid :"",
+      snapshotid: "",
+    }
+  },
+  
+  onlike(evt){
+    API.like(this.data.packageId,(success)=>{
+      this.loadC2PBehavior()
+    }, (err)=>{
+      console.error(err)
+      wx.showToast({
+        title: "点赞失败",
+        icon: "success",
+        duration: 2000
+      })
+    }, this.data.behaviorstatus.liked)
+  },
+  ondislike(evt){
+    API.dislike(this.data.packageId,(success)=>{
+      this.loadC2PBehavior()
+    }, (err)=>{
+      console.error(err)
+      wx.showToast({
+        title: "反对失败",
+        icon: "success",
+        duration: 2000
+      })
+    }, this.data.behaviorstatus.disliked)
+  },
+  oncollect(evt){
+    console.log(111)
+    API.collect(this.data.packageId,(success)=>{
+      this.loadC2PBehavior()
+    }, (err)=>{
+      console.error(err)
+      wx.showToast({
+        title: "收藏失败",
+        icon: "success",
+        duration: 2000
+      })
+    }, this.data.behaviorstatus.collected)
+  },
+  onshare(evt){
+    API.share(this.data.packageId,(success)=>{
+      this.loadC2PBehavior()
+    }, (err)=>{
+      console.error(err)
+    })
+  },
+  
+  loadC2PBehavior(){
+    API.getC2PBehavior(this.data.packageId,(data)=>{
+      API.GetProductBehaviorInfo(this.data.packageId, (data2)=>{
+        var newStatus = {
+          liked: data.like,
+          disliked: data.dislike,
+          collected: data.collection,
+          share: data.share,
+          commentcount: data2.commentcount,
+        }
+        var product = this.data.product
+        product.like = data2.like
+        product.dislike = data2.dislike
+        product.collection = data2.collection
+        product.share = data2.share
+        console.log("product status")
+        console.log(newStatus)
+        this.setData({
+          behaviorstatus : newStatus,
+          product: product
+        })
+      }, (err)=>{
+        console.error(err)
+        wx.showToast({
+          title: "加载作品信息失败",
+          icon:"success",
+          duration:2000,
+        })
+      })
+    }, (err)=>{
+        console.error(err)
+        wx.showToast({
+          title: "加载作品信息失败",
+          icon:"success",
+          duration:2000,
+        })
+      })
+    },
+  // 显示评论框
+  showCommentModal(evt) {
+    if(evt.currentTarget.dataset.token){
+      var replyname = evt.currentTarget.dataset.name
+      this.setData({
+        commentText: "@" + replyname + " "
+      })
+    }
+    API.fetchSnapshotByVideoid(
+      this.data.packageId,
+      this.data.videoid,
+      (data:any)=>{
+        console.log("image:" + MapImageUrl(data))
+
+        this.setData({
+          showComment: true,
+          dialog:{
+            snapshotNodeid: data,
+            snapshotid: MapImageUrl(data),
+          }
+        });
+      },(err:any)=>{
+        console.error(err)
+        wx.showToast({
+          title: "获取快照失败",
+          icon: "error",
+          duration: 2000
+        })
+      }
+    )
+  },
+
+  // 隐藏评论框
+  hideCommentModal() {
+    this.setData({
+      showComment: false,
+      commentText: '',
+      trimText: '',
+    });
+  },
+
+  // 监听评论输入
+  onCommentInput(e) {
+    this.setData({
+      commentText: e.detail.value,
+      trimText: e.detail.value.trim(),
+    });
+  },
+
+  // 发送评论
+  sendComment() {
+    if (!this.data.commentText.trim()) {
+      wx.showToast({
+        title: '评论内容不能为空',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 这里可以添加发送评论的逻辑，比如调用接口
+    API.comment(this.data.packageId, this.data.trimText, "", this.data.dialog.snapshotNodeid, false,
+    (data:any)=>{
+      wx.showToast({
+        title: '评论发送成功',
+        icon: 'success'
+      });
+      
+      // 发送成功后关闭弹框
+      this.hideCommentModal()
+      this.loadC2PBehavior()
+      wx.pageScrollTo({
+        scrollTop: 0
+        });
+    }, (err)=>{
+      console.error(err)
+      wx.showToast({
+        title: err,
+        icon: 'success'
+      });
+    })
+    
   },
   alert(text: any) {
     wx.showToast({
@@ -59,8 +253,17 @@ Page({
   hideloading(){
     this.setData({showloading: false, loadingmsg: ""})
   },
-  play(callback: any) {
-    var req = 'http://39.105.153.38/Immortal/GetVideoFile?packageid=' + escape(this.data.packageId) + "&nodeid=" + escape(this.data.currentNode) + "&context=" + JSON.stringify(this.data.context);
+  play(callback: any, packageid:any=undefined, nodeid:any=undefined, context:any=undefined) {
+    if(!packageid){
+      packageid = this.data.packageId
+    }
+    if(!nodeid){
+      nodeid = this.data.currentNode
+    }
+    if(!context){
+      context = this.data.context
+    }
+    var req = baseurl + 'Immortal/GetVideoFile?packageid=' + escape(packageid) + "&nodeid=" + escape(nodeid) + "&context=" + JSON.stringify(context);
     // var req = 'http://127.0.0.1:5046/Immortal/GetVideoFile' //?packageid=' + escape(packageId) + "&nodeid=" + escape(currentNode) + "&context=" + JSON.stringify(context);
     // alert(req);
     // console.log(escape(this.data.packageId) + "_" + escape(this.data.currentNode) + "_" + JSON.stringify(this.data.context))
@@ -112,9 +315,19 @@ Page({
     var actionlist = respJS.nextlist.data;
     this.data.nextlist = actionlist
     this.data.actionList = [];
+    var mutekey:string = "mute_" + nodeid
+    if(this.data.context.hasOwnProperty(mutekey) && this.data.context[mutekey] > 0) {
+      this.data.videomuted = true
+    }
+    else{
+      this.data.videomuted = false
+    }
     var defaultnextid:string;
     for (var i = 0; i < actionlist.length; i++) {
         var action = actionlist[i];
+        if (action.Preload){
+          this.preload(action.ID)
+        }
         var newitem = {
             text: action.Question,
             title: action.Title,
@@ -139,7 +352,6 @@ Page({
     var videoid = respJS.node.VideoDataKey;
     if (respJS.node.Data && respJS.node.Data.playvideo && respJS.node.Data.playvideo.length > 0) {
         // alert(respJS.node.Data.playvideo);
-        
         videoid = respJS.node.Data.playvideo;
     }
     this.data.videoid = videoid
@@ -153,12 +365,28 @@ Page({
       setTimeout(() => {
         console.log(path)
         this.hideloading()
-        this.setData({videourl: path})
+        this.setData({videourl: path, videomuted: this.data.videomuted})
         this.data.playing = false
         this.handleActions(this.data.context, defaultnextid, path);
-        this.fadeinbuttons()
+        wx.getVideoInfo({src: path,
+        success: (res)=>{
+          console.log('success')
+          var duration = res.duration
+          //TODO: load from config or backend
+          var donotshowuntilSec = 4
+          var timeout = duration - donotshowuntilSec
+          console.log('' + timeout)
+          if(timeout <= 0){
+            this.fadeinbuttons()
+          }
+          else{
+            setTimeout(()=>{this.fadeinbuttons()}, timeout * 1000)
+          }
+        },fail: (res)=>{
+          console.log(res)
+        }})
       }, timeleft);
-    })
+    }, ()=>{})
     // video.attr('src', '/Immortal/GetVideo?packageid=' + packageId + "&videoid=" + videoid);
 
     // if (waitSignal) {
@@ -202,7 +430,7 @@ playBGM(audioid:string){
       audio.stop()
       audio.src = file
       audio.play()
-    })
+    },()=>{})
   }
 },
 clearActions(){
@@ -309,21 +537,50 @@ handleActions(context:any, defaultnextid:string, videopath:string) {
   playNode(nodeid:string, waitSignal:boolean=false) {
 
     this.preplay(nodeid)
-    this.play((respJS: any) => {
-      // alert(JSON.stringify(respJS));
-      this.updateStateByResponse(respJS, waitSignal, this.afterslidefunc)
-    });
+    if(this.data.preloadcache.hasOwnProperty(nodeid)){
+      console.log("load from cached")
+      var cacheRespJS = this.data.preloadcache[nodeid]
+      this.updateStateByResponse(cacheRespJS, waitSignal, this.afterslidefunc)
+      // clear cache
+      this.data.preloadcache = {}
+    }
+    else{
+      console.log("load from server")
+      this.play((respJS: any) => {
+        // alert(JSON.stringify(respJS));
+        this.updateStateByResponse(respJS, waitSignal, this.afterslidefunc)
+        this.data.preloadcache = {}
+      });
+    }
   },
-
-  preplay(nodeid: string) {
-    this.data.context.lastnode = this.data.currentNode;
-    this.data.context.currentNode = this.data.nodeid;
-    this.data.currentNode = nodeid;
-    
-    this.data.actionclicktimestamp = new Date().getTime();
-
+  preload(nodeid:string){
+    console.log("begin preload")
+    var contxt = this.preplay(nodeid, true)
+    this.play((respJS: any)=>{
+      // var nodeid = respJS.node.ID;
+      // this.data.currentNode = nodeid;
+      // var coxt = respJS.context;
+      // this.data.context = coxt;
+      // var actionlist = respJS.nextlist.data;
+      // this.data.nextlist = actionlist
+      this.data.preloadcache[nodeid] = respJS
+    },this.data.packageId, nodeid, contxt)
+  },
+  preplay(nodeid: string, preloadmode:boolean=false) {
+    var contxt = this.data.context
+    if(preloadmode){
+      contxt = JSON.parse(JSON.stringify(this.data.context))
+    }
+    contxt.lastnode = this.data.currentNode;
+    contxt.currentNode = this.data.nodeid;
+    if(!preloadmode){
+      this.data.currentNode = nodeid;
+      
+      this.data.actionclicktimestamp = new Date().getTime();
+    }
     // var textboxinput = $('#tb_textinput');
     // context.promptText = textboxinput.val();
+    return contxt
   },
 savecheckpoint(){
   var path = getCheckpointfilepathbyPackageiId(this.data.packageId)
@@ -363,10 +620,14 @@ tryloadcheckpoint(){
    * 生命周期函数--监听页面加载
    */
   onLoad(option) { 
-    var product = getProdById(option.productid)
+    // deprecated
+    // var product = getProdById(option.productid)
+    var product = resource.currentProduct
     this.setData({ packageId: option.productid, continue: option.continue == "1", product:product })
     console.log(this.data.packageId)
     var foundcheckpoint = false
+    this.loadC2PBehavior()
+
     if(this.data.continue){
       foundcheckpoint = this.tryloadcheckpoint()
     }
@@ -409,7 +670,9 @@ tryloadcheckpoint(){
     try{
       this.savecheckpoint()
     }
-    catch{}
+    catch(error){
+      console.log(error)
+    }
   },
 
   /**
