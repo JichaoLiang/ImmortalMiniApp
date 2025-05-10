@@ -13,6 +13,12 @@ Page({
     take: 30,
   },
 
+  onviewuser(evt){
+    console.log(evt)
+    var targettoken = evt.currentTarget.dataset.id
+    utils.viewuserprofile(targettoken)
+  },
+
   productDetail(evt:any){
     var prodid = evt.target.dataset.prodid
     wx.navigateTo({url: "/pages/product/product?productid=" + prodid})
@@ -59,8 +65,41 @@ Page({
         })
       }, this.data.offset, this.data.take)
     }
-    else if (method == "Collection"){
+    else if (method == "Collect"){
       this.setData({title: "收藏"})
+      API.GetCollectProductFeed((data)=>{
+        console.log(data)
+        var length = data.data.length
+        if(length > 0){
+          this.data.offset += length
+          for(var i = 0;i<length;i++){
+            // mapimageid to url
+            var imgs = data.data[i].images
+            for(var j = 0;j<imgs.length; j++){
+              imgs[j].url = utils.MapImageUrl(imgs[j].url)
+            }
+            console.log(data.data[i].images)
+
+            // truncate description
+            data.data[i].description = utils.truncateText(data.data[i].description, 18)
+          }
+          this.setData({feedstream: data.data})
+        }
+        else{
+          wx.showToast({
+            title: "没有更多了",
+            icon: "success",
+            duration: 2000,
+          })
+        }
+      }, (err)=>{
+        console.log(err)
+        wx.showToast({
+          title: err,
+          icon: "success",
+          duration: 2000,
+        })
+      }, this.data.offset, this.data.take)
     }
   },
 

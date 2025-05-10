@@ -1,0 +1,127 @@
+.container {
+  padding: 20rpx;
+}
+
+.article-item {
+  margin-bottom: 10rpx;
+  margin-left:20rpx;
+  margin-right:20rpx;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #a0a0a0;
+  display: flex;
+  align-self: flex-start;
+}
+
+.article-item-introduction{
+  display: block;
+  width: 650rpx;
+  height: 200rpx;
+}
+
+.title {
+  font-size: 30rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.author, .time {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.cover {
+  width: 100%;
+  height: 300rpx;
+  margin-bottom: 10rpx;
+}
+
+.preview {
+  font-size: 28rpx;
+  color: #666;
+}
+
+
+/* tab部分 */
+/* Tab栏样式 */
+.tabs {
+  display: flex;
+  height: 88rpx;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
+  margin: 20rpx;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 30rpx;
+  color: #666;
+  position: relative;
+  padding: 0 10rpx;
+}
+
+.tab-item text {
+  transition: all 0.3s ease;
+}
+
+.tab-item.active text {
+  color: #333;
+  font-weight: 500;
+}
+
+.tab-indicator {
+  width: 40rpx;
+  height: 4rpx;
+  background-color: transparent;
+  margin-top: 10rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active .tab-indicator {
+  background-color: #07C160; /* 微信绿色作为激活色 */
+}
+.content {
+  padding: 30rpx;
+}
+
+.content-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+}
+
+.content-body {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+
+.capsule-btn {
+  padding: 0 40rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  font-size: 28rpx;
+  color: #ffffff;
+  background-color: #1989fa; /* 蓝色 */
+  border-radius: 32rpx;
+  display: inline-block;
+}
+
+.capsule-btn:active {
+  background-color: #1578e0;
+}
+
+.capsule-btn[disabled] {
+  background-color: #a0e8c3;
+  color: #fff;
+  opacity: 0.7;
+}

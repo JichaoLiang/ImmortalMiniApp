@@ -1,6 +1,8 @@
 // app.ts
+const Towxml = require('/miniprogram_npm/towxml/index')
 App<IAppOption>({
   globalData: {},
+  // towsml:require('/miniprogram_npm/towxml/index'),
   onLaunch() {
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力');
@@ -14,6 +16,7 @@ App<IAppOption>({
         traceUser: true,
       });
     }
+    this.towxml = Towxml
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())

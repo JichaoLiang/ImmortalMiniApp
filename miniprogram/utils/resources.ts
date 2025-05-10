@@ -12,7 +12,14 @@ class Resource{
   logintempuser:User = new User()
   currentProduct:any = null
   currentplatform = utils.platform()
+  articletopics = []
 }
 
-
 export var resource:Resource = new Resource()
+
+// init
+utils.gettopics((result)=>{
+  resource.articletopics = result
+},(err)=>{
+  console.log(err)
+})

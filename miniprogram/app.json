@@ -52,7 +52,11 @@
     "pages/player/player",
     "pages/login/login",
     "pages/showtext/showtext",
-    "pages/productlist/productlist"
+    "pages/productlist/productlist",
+    "pages/userview/userview",
+    "pages/articleedit/articleedit",
+    "pages/articledetail/articledetail",
+    "pages/articlelist/articlelist"
   ],
   "window": {
     "navigationBarTextStyle": "black",

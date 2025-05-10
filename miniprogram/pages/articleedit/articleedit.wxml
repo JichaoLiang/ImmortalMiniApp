@@ -1,0 +1,57 @@
+<view class="container">
+  <form class="submitform" bindsubmit="submitForm">
+    <view class="form-item">
+      <input style="border-radius: 30rpx;text-align: center;" disabled="{{parent.length > 0 ? 'true': ''}}" name="title" bindinput="oninputtitle" placeholder="{{parent.length > 0 ?  ('回复: '+ parentname) :'请输入标题'}}" />
+    </view>
+    <!-- <radio-group style="display: flex; align-items: flex-end;">
+      <radio checked="checked">html
+      </radio>
+      <radio>markdown
+      </radio>
+    </radio-group> -->
+    <view class="form-item">
+      <textarea style="height:1100rpx;width:700rpx;border-radius: 30rpx;" value="{{input.content.richtext}}" bindinput="oncontentinput" name="content" maxlength="99999" placeholder="请输入内容，支持HTML">
+      
+      </textarea>
+    </view>
+    
+    <view class="form-item">
+      <button class="choosemedia-button" bindtap="chooseImage">插入图片</button>
+      <button class="choosemedia-button" bindtap="chooseVideo">插入视频</button>
+      <button class="choosemedia-button capsule-btn" bindtap="showCommentModal">预览/提交</button>
+    </view>
+    
+    <!-- <view class="preview">
+      <block wx:for="{{images}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFit" class="preview-image"></image>
+      </block>
+      
+      <block wx:if="{{video}}">
+        <video src="{{video}}" controls class="preview-video"></video>
+      </block>
+    </view> -->
+    <view wx:if="{{showpending}}" class="comment-modal modal-mask" style="align-content: center;text-align: center;">
+      <view class="mask-pendding">
+        请稍候
+      </view>
+    </view>
+
+    <view class="comment-modal" wx:if="{{showComment}}">
+        <view class="modal-mask" catchtap="hideCommentModal"></view>
+        <view class="modal-content">
+          <view class="modal-header">
+            <text class="title">预览</text>
+            <text class="cancel-btn" catchtap="hideCommentModal">关闭</text>
+          </view>
+          <view style="min-height: 800rpx;max-height:1000rpx;overflow-y: scroll;width: 100%;">
+          <import src="/miniprogram_npm/towxml/towxml.wxml"/>
+           <towxml nodes="{{article}}"/>
+          </view>
+          <view>
+            <button bind:tap="onsubmit" class="capsule-btn" style="left: 170rpx;">提交</button>
+          </view>
+        </view>
+      </view>
+  <!--使用towxml-->
+  </form>
+</view>

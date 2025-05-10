@@ -2,7 +2,7 @@
 const app = getApp<IAppOption>()
 var prodlist = require("../../utils/products.js")
 import * as API from "../../utils/serverAPI"
-import { listVideoIdByProductId, listAudioIdByProductId, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, platform } from "../../utils/util"
+import { listVideoIdByProductId, listAudioIdByProductId, viewuserprofile, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, platform } from "../../utils/util"
 Page({
 
   /**
@@ -391,6 +391,17 @@ Page({
       }
     })
   },
+  onviewuser(evt){
+    console.log(evt)
+    var targettoken = evt.currentTarget.dataset.id
+    viewuserprofile(targettoken)
+  },
+  onviewauthortap(){
+    var authorid = this.data.product.author.id
+    // console.log(authorid)
+    viewuserprofile(authorid)
+    
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -464,17 +475,21 @@ Page({
     //   scene: 0, 
     //   promise 
     // }
+    var img = this.data.product.images[0].url
+    console.log("img")
+    console.log(img)
     return {
       title: '这种玩法有点意思，大家来看看',  // 默认是小程序名称
       path: '/pages/index/index?productid='+this.data.productid,  // 默认是当前页面路径
-      imageUrl: MapImageUrl(this.data.product.images[0].url)  // 自定义图片路径
+      imageUrl: img  // 自定义图片路径
     }
   },
   onShareTimeline() {
+    var img = this.data.product.images[0].url
     return {
       title: '这种玩法有点意思，大家来看看',
       query: 'from=timeline&productid='+this.data.productid,  // 自定义参数
-      imageUrl: MapImageUrl(this.data.product.images[0].url)  // 自定义图片路径
+      imageUrl: img // 自定义图片路径
     }
   }
 })

@@ -1,6 +1,7 @@
 import * as utils from "../../utils/util"
 import * as API from "../../utils/serverAPI"
 import * as resource from '../../utils/resources'
+import { isDataValueHandlerExisted } from "XrFrame/core/DataValue"
 // pages/profile/profile.ts
 Page({
 
@@ -71,6 +72,15 @@ Page({
   gologin(){
     wx.navigateTo({url:"../login/login"})
   },
+  setVisible(){
+    var isMySelf = this.data.isMySelf
+    if(!isMySelf){
+      var tabs = this.data.tabs
+      this.setData({
+        tabs:[tabs[0], tabs[1], tabs[3]]
+      })
+    }
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -78,8 +88,13 @@ Page({
     var usertoken = options.usertoken
     if(usertoken && resource.resource.user.id != usertoken){
       this.setData({isMySelf: false})
-      API.fetchUserInfoByToken(usertoken, (result)=>{
-        
+      API.ViewUserProfile(resource.resource.user.id, usertoken, (result)=>{
+        this.setData({
+          id: result.id,
+          avatar: utils.MapImageUrl(result.imgid),
+          nickName: result.nickname,
+          signature: result.signature
+        })
       },(err:any)=>{
         wx.showToast({
           title: "加载用户信息失败",

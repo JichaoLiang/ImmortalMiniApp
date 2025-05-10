@@ -655,13 +655,6 @@ tryloadcheckpoint(){
    * 生命周期函数--监听页面隐藏
    */
   onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
     if (audio != undefined){
       try{
       audio.stop()
@@ -673,6 +666,12 @@ tryloadcheckpoint(){
     catch(error){
       console.log(error)
     }
+  },
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload() {
   },
 
   /**
@@ -693,6 +692,47 @@ tryloadcheckpoint(){
    * 用户点击右上角分享
    */
   onShareAppMessage() {
-
+    // TODO: 应用于APP模式
+    // const promise = new Promise(resolve => {
+    //   setTimeout(() => {
+    //     resolve({
+    //       userName: '小程序原始id',  
+    //       path: 'pages/index/index',
+    //       title: '标题',
+    //       imagePath: '/pages/thumb.png',
+    //       webpageUrl: 'www.qq.com',
+    //       withShareTicket: true,
+    //       miniprogramType: 0,
+    //       scene: 0, 
+    //     })
+    //   }, 2000)
+    // })
+    // return {
+    //   userName: '小程序原始id',  
+    //   path: 'pages/index/index',
+    //   title: '标题',
+    //   imagePath: '/pages/thumb.png',
+    //   webpageUrl: 'www.qq.com',
+    //   withShareTicket: true,
+    //   miniprogramType: 0,
+    //   scene: 0, 
+    //   promise 
+    // }
+    var img = this.data.product.images[0].url
+    console.log("img")
+    console.log(img)
+    return {
+      title: '这种玩法有点意思，大家来看看',  // 默认是小程序名称
+      path: '/pages/index/index?productid='+this.data.productid,  // 默认是当前页面路径
+      imageUrl: img  // 自定义图片路径
+    }
+  },
+  onShareTimeline() {
+    var img = this.data.product.images[0].url
+    return {
+      title: '这种玩法有点意思，大家来看看',
+      query: 'from=timeline&productid='+this.data.productid,  // 自定义参数
+      imageUrl: img // 自定义图片路径
+    }
   }
 })

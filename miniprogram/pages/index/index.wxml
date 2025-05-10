@@ -26,7 +26,7 @@
       <view style="display: inline-block; position: absolute; z-index: 999; margin:40rpx; color:white;">{{"《" + item.title + "》"}}</view>
       <image src="{{item.image}}" bind:tap="productDetail" data-prodid="{{item.linkid}}"></image>
       <text>{{item.comment}}</text>
-      <text style="font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline;">{{item.by}}</text>
+      <text style="font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline;" data-id="{{item.authorid}}" bind:tap="onviewuser">{{item.by}}</text>
       </view>
     </view>
     

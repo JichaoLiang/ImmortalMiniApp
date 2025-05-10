@@ -63,6 +63,29 @@ export const fetchUserInfoByToken = (token: string, callback:any, failedcallback
   }, callback, failedcallback)
 }
 
+export const getUserBehaviorInfo = (touser:string, callback:any, failed:any) =>{
+  var token = resource.user.id
+  callserver("GetUserBehaviorInfo",{
+    token: token,
+    tousertoken: touser,
+  }, callback, failed)
+}
+
+export const getBehaviorInfoC2C = (touser:string, callback:any, failed:any) =>{
+  var token = resource.user.id
+  callserver("GetBehaviorInfoC2C",{
+    token: token,
+    tousertoken: touser,
+  }, callback, failed)
+}
+
+export const ViewUserProfile = (token:string, toview:string, success:any, failed: any)=>{
+  callserver('ViewUserProfile', {
+    token: token,
+    toview: toview,
+  }, success, failed)
+}
+
 export const getTokenbyTempWxid = (tempwxid, isAPP, callback, failcallback)=>{
   callserver('GetTokenByWxid', {
     wxid: tempwxid,
@@ -70,7 +93,7 @@ export const getTokenbyTempWxid = (tempwxid, isAPP, callback, failcallback)=>{
   }, callback, failcallback)
 }
 
-export const uploadfile = (filepath:string, extname:string, callback:any)=>{
+export const uploadfile = (filepath:string, extname:string, callback:any, failcallback:any=(err:any)=>{})=>{
   console.log(config.baseurl + 'FileUpload?extname=' + extname)
   wx.uploadFile({
     url: config.baseurl + 'ImmortalAPP/FileUpload?extname=' + extname, // 替换为你的上传接口
@@ -91,9 +114,68 @@ export const uploadfile = (filepath:string, extname:string, callback:any)=>{
       }
     },
     fail: (err) => {
+      utils.alert("上传失败")
       console.error('上传失败:', err);
+      failcallback(err)
     }
   });
+}
+
+export const gettopics = (success:any, failed:any)=>{
+  callserver("GetArticleTopics",{
+  }, (res)=>{
+    var data = res.data
+    success(data)
+  }
+    , failed)
+}
+
+export const newarticle = (topic:string, title:string, richtext:string, parent:string="", success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("NewArticle",{
+    token:token,
+    topic: topic,
+    title: title,
+    richtext: richtext,
+    parent: parent
+  }, (res)=>{
+    success(res)
+  }, (err)=>{
+    console.error(err)
+    failed(err)
+  })
+}
+
+export const loadtopics = (success:any, failed: any, isbroadcast:boolean=false)=>{
+  callserver("GetArticleTopics",{
+    isbroadcast:isbroadcast,
+  }, success, failed)
+}
+
+export const loadarticlelist = (topicid:any, pageindex:number=0, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("ListArticle", {
+    token: token,
+    topic: topicid,
+    pageindex: pageindex
+  },success, failed)
+}
+
+export const loadarticlereplies = (articleid:any, pageindex:number=0, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("ListArticleReplies", {
+    token: token,
+    parentid: articleid,
+    pageindex: pageindex
+  },success, failed)
+}
+
+export const loadarticeinfo = (articleid:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("ViewArticle",{
+    token:token,
+    id:articleid,
+  }, success, failed)
 }
 
 export const GetProductFeed = (method:string, success:any, failed:any, skip:number, take:number)=>{
@@ -117,6 +199,20 @@ export const GetProductFeed = (method:string, success:any, failed:any, skip:numb
 
 export const GetHotProductFeed = (success:any, failed:any, skip:number, take:number)=>{
   GetProductFeed("Hot", success, failed, skip, take)
+}
+
+export const GetCollectProductFeed = (success:any, failed:any, skip:number, take:number)=>{
+  GetProductFeed("Collect", success, failed, skip, take)
+}
+
+export const GetCommentFeed = (method:string,success:any, failed:any, skip:number, take:number)=>{
+  var token = resource.user.id
+  callserver("GetCommentFeedStream", {
+    method:method,
+    token:token,
+    skip:skip,
+    take:take,
+  }, success, failed)
 }
 
 export const GetProductByPackageID = (id:string, success:any, failed:any)=>{
@@ -187,6 +283,15 @@ export const share = (productid:string, success:any, failed:any)=>{
   callserver("Share",{
     token: token,
     productid: productid,
+  },success, failed)
+}
+
+export const follow = (tousertoken:string, success:any, failed:any, undo:boolean=false)=>{
+  var token = resource.user.id
+  callserver("Follow",{
+    token: token,
+    tousertoken: tousertoken,
+    undo:undo
   },success, failed)
 }
 

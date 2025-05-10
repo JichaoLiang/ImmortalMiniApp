@@ -8,3 +8,25 @@
   padding: 200rpx 0;
   box-sizing: border-box;
 } 
+
+
+.capsule-btn {
+  padding: 0 40rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  font-size: 28rpx;
+  color: #ffffff;
+  background-color: #1989fa; /* 蓝色 */
+  border-radius: 32rpx;
+  display: inline-block;
+}
+
+.capsule-btn:active {
+  background-color: #1578e0;
+}
+
+.capsule-btn[disabled] {
+  background-color: #a0e8c3;
+  color: #fff;
+  opacity: 0.7;
+}

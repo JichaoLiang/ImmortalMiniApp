@@ -81,3 +81,11 @@
   vertical-align: middle;
 }
 
+.collect-text::before {
+  background-color: #a71da7; /* 与分界线同色 */
+}
+
+.collect-bar::after {
+  background-color: #a71da7; /* 与分界线同色 */
+}
+

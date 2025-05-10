@@ -1,0 +1,181 @@
+.container {
+  padding: 20rpx;
+}
+
+.article {
+  margin-bottom: 40rpx;
+  max-height:100%
+}
+
+.title {
+  width: 100%;
+  margin-left:auto;
+  margin-right:auto;
+  text-align: center;
+  font-size: 40rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+.avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.content {
+  font-size: 30rpx;
+  line-height: 1.6;
+  margin: 20rpx 0;
+}
+
+.content-image {
+  width: 100%;
+  margin: 15rpx 0;
+}
+
+.content-video {
+  width: 100%;
+  height: 400rpx;
+  margin: 15rpx 0;
+}
+
+.stats {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 20rpx;
+}
+
+.comment-section {
+  border-top: 1rpx solid #eee;
+  padding-top: 20rpx;
+}
+
+.comment-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+}
+
+.comment-item {
+  display: flex;
+  margin-bottom: 30rpx;
+}
+
+.comment-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-right: 15rpx;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-author {
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-bottom: 5rpx;
+}
+
+.comment-text {
+  font-size: 28rpx;
+  margin-bottom: 5rpx;
+}
+
+.comment-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.comment-input {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+}
+
+.comment-input input {
+  flex: 1;
+  border: 1rpx solid #ddd;
+  padding: 15rpx;
+  margin-right: 15rpx;
+  border-radius: 8rpx;
+}
+
+.article-view{
+  position: fixed;
+  left:0rpx;
+  top:0rpx;
+  width: 100%;
+  overflow: scroll;
+}
+
+/* 评论弹框样式 */
+.comment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.mask-pendding{
+  position: fixed;
+  left:240rpx;
+  top:500rpx;
+  background-color: #f0f0f0;
+  width: 200rpx;
+  height: 200rpx;
+  text-align: center; 
+  padding: 50rpx 50rpx; 
+  border-radius: 20rpx;
+  opacity: 0.7;
+  font-size: larger;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 16rpx 16rpx 0 0;
+  padding: 20rpx 30rpx;
+  z-index: 1000;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+}
+
+.splitbar{
+  margin-left:40rpx;
+  margin-top:20rpx;
+  align-self: center;
+  width: 90%;
+  height: 2rpx;
+  background-color: #a0a0a0;
+}

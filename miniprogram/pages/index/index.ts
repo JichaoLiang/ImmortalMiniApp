@@ -4,7 +4,7 @@ const app = getApp<IAppOption>()
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 import { resource } from '../../utils/resources'
 import * as API from '../../utils/serverAPI'
-import { platform, listVideoIdByProductId, listAudioIdByProductId, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, requireUserInfo, weixinlogin } from 
+import { platform, listVideoIdByProductId, viewuserprofile, listAudioIdByProductId, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, requireUserInfo, weixinlogin } from 
 "../../utils/util"
 
 Component({
@@ -66,7 +66,7 @@ Component({
       {
         icon:"/images/Icon2.png",
         title:"热门",
-        link:"../productlist/productlist?method=Hot"
+        link:"/pages/productlist/productlist?method=Hot"
       },
       // {
       //   icon:"/images/Icon2.png",
@@ -81,17 +81,17 @@ Component({
       {
         icon:"/images/Icon4.png",
         title:"收藏",
-        link:"1234"
+        link:"/pages/productlist/productlist?method=Collect"
       },
       {
         icon:"/images/Icon3.png",
         title:"社区",
-        link:"567"
+        link:"/pages/articlelist/articlelist"
       },
       {
         icon:"/images/Icon5.png",
         title:"创作",
-        link:"5672"
+        link:"/pages/articlelist/articlelist?isbroadcast=1"
       },
     ],
 
@@ -138,15 +138,13 @@ Component({
       var prodid = evt.target.dataset.prodid
       wx.navigateTo({url: "/pages/product/product?productid=" + prodid})
     },
+    onviewuser(evt){
+      console.log(evt)
+      var targettoken = evt.currentTarget.dataset.id
+      viewuserprofile(targettoken)
+    },
     onLoad(options){
       console.log(resource.currentplatform)
-      fetchFeedList((feed:any)=>{
-        for (var i = 0; i < feed.length; i++){
-          feed[i].image = MapImageUrl(feed[i].image)
-        }
-        console.log(feed)
-        this.setData({feedstream: feed})
-      }, (feed:any)=>{})
 
       var prodid = options.productid
       if(prodid && resource.user.id.length > 0){
@@ -154,6 +152,15 @@ Component({
           url: '../product/product?productid='+prodid
         })
       }
+    },
+    fetchfeed(){
+      fetchFeedList((feed:any)=>{
+        for (var i = 0; i < feed.length; i++){
+          feed[i].image = MapImageUrl(feed[i].image)
+        }
+        console.log(feed)
+        this.setData({feedstream: feed})
+      }, (feed:any)=>{})
     },
     onShow(options){
       /* @if env=='miniprogram' */
@@ -170,6 +177,7 @@ Component({
         // })
       }, ()=>{})
       /* endif */
+      this.fetchfeed()
     }
   },
 })

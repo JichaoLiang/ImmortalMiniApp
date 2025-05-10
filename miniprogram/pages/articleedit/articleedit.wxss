@@ -1,0 +1,124 @@
+
+
+.container {
+  padding: 20rpx;
+  width: 100%;
+}
+
+.submitform{
+  margin: 20rpx;
+  width: 100%;
+}
+
+.form-item {
+  margin-bottom: 20rpx;
+  display: flex;
+}
+
+.choosemedia-button {
+  border-radius: 15rpx;
+  background-color: #f0f0f0;
+  margin: 10rpx 10rpx;
+  max-width: 220rpx;
+  font-size: smaller;
+  align-items:flex-start;
+}
+
+input, textarea {
+  border: 1rpx solid #ddd;
+  padding: 10rpx;
+  width: 100%;
+}
+
+.preview-image {
+  width: 200rpx;
+  height: 200rpx;
+  margin-right: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.preview-video {
+  width: 100%;
+  height: 400rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 彈框 */
+
+/* 评论弹框样式 */
+.comment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.mask-pendding{
+  position: fixed;
+  left:240rpx;
+  top:500rpx;
+  background-color: #f0f0f0;
+  width: 200rpx;
+  height: 200rpx;
+  text-align: center; 
+  padding: 50rpx 50rpx; 
+  border-radius: 20rpx;
+  opacity: 0.7;
+  font-size: larger;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 16rpx 16rpx 0 0;
+  padding: 20rpx 30rpx;
+  z-index: 1000;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.cancel-btn {
+  font-size: 28rpx;
+  color: #999;
+}
+
+
+.capsule-btn {
+  color: #ffffff;
+  background-color: #1989fa; /* 蓝色 */
+}
+
+.capsule-btn:active {
+  background-color: #1578e0;
+}
+
+.capsule-btn[disabled] {
+  background-color: #a0e8c3;
+  color: #fff;
+  opacity: 0.7;
+}

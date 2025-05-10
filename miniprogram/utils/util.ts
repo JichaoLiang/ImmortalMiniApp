@@ -2,7 +2,7 @@ var products = require('./products.js')
 import * as resource from './resources'
 import * as API from './serverAPI'
 import * as enums from './enum'
-import {baseurl} from "./config"
+import {baseurl, dummyaccount} from "./config"
 
 export const formatTime = (date: Date) => {
   const year = date.getFullYear()
@@ -155,6 +155,47 @@ export const fetchAudios = (packageid:string, audioids: string[], callback)=>{
       fetchAudios(packageid, tail, callback)
     })
   }
+}
+
+export const fetchResourceTxt = (id:string, success:any, failed:any)=>{
+  var path = wx.env.USER_DATA_PATH + "/" + id + ".txt"
+  var fs = wx.getFileSystemManager()
+  if(fileexists(path)){
+    var data = fs.readFileSync(path,"utf-8")
+    success(data)
+    return
+  }
+  wx.downloadFile({
+    url: MapTextUrl(id),
+    timeout: 1800000,
+    filePath: path,
+    // filePath: wx.env.USER_DATA_PATH + '/' + item.fullName,
+    success(res) {
+      if (res.statusCode === 200) {
+        // wx.hideLoading()
+        console.log(id)
+        if(fileexists(path)){
+          var data = fs.readFileSync(path)
+          success(data)
+        }
+        else{
+          setTimeout(() => {
+            fetchResourceTxt(id, success, failed)
+          }, 100);
+        }
+      }
+    },
+    fail(err) {
+      console.log(err);
+      wx.showToast({
+        title: '下载失败，请重新尝试',
+        icon: 'none',
+        mask: true
+      })
+    },
+    complete(msg){
+    }
+  })
 }
 
 export const fetchVideo = (packageid: string, videoid: string, callback: any, completecallback:any)=> {
@@ -379,9 +420,7 @@ export const requireUserInfo = (success:any, failed:any)=>{
         console.log(res.code)
         var userinfo = resource.resource.user;
         var tempinfo = resource.resource.logintempuser;
-          
-        API.getTokenbyTempWxid(res.code, false, (token)=>{
-          var tk = token.token
+        var getOrNew = (tk)=>{
           API.fetchUserInfoByToken(tk,(info)=>{
             userinfo.id = info.id;
             userinfo.imgid = info.imgid;
@@ -401,6 +440,14 @@ export const requireUserInfo = (success:any, failed:any)=>{
             icon: 'success', //弹框模式
             duration: 2000 })
           })
+        }
+        var tpid = res.code
+        if(dummyaccount.length > 0){
+          tpid = dummyaccount
+        }
+        API.getTokenbyTempWxid(tpid, false, (token)=>{
+          var tk = token.token
+          getOrNew(tk)
         }, (err)=>{
           var msg = "获取token失败: "
           console.log(err)
@@ -421,46 +468,75 @@ export const GetHotProductFeedList = (success:any, failed:any, skip:number, take
 }
 
 export const truncateText = (text:string, maxLengh:number=18)=>{
+  if(text.length <= maxLengh){
+    return text
+  }
   return text.substr(0, maxLengh) + "..."
 }
 
-export const fetchFeedList = (callbackfun:Function, completecallback:Function)=>{
-  if (!heartbit("feed")){
-    return callbackfun(products.feed)
-  }
-  var filename = wx.env.USER_DATA_PATH + '/' + 'feed.json'
-  const urlstr = baseurl + 'Immortal/GetFeed'
-  wx.downloadFile({
-    url: urlstr,
-    filePath: filename,
-    timeout: 1800000,
-    // filePath: wx.env.USER_DATA_PATH + '/' + item.fullName,
-    success(res) {
-      if (res.statusCode === 200) {
-        console.log(res)
-        // wx.hideLoading()
-        var FileSystemManager = wx.getFileSystemManager()
-        var jsonstring:string = FileSystemManager.readFileSync(filename, "utf-8")
-        // console.log(jsonstring)
-        var jsObj = JSON.parse(jsonstring)
-        products.feed = jsObj.data
-        callbackfun(products.feed)
+export const fetchFeedList = (callbackfun:Function, completecallback:Function, skip:number=0, take:number=30)=>{
+  // if (!heartbit("feed")){
+  //   return callbackfun(products.feed)
+  // }
+  API.GetCommentFeed(
+    "New",
+    (res:any)=>{
+      products.feed = []
+      for(var i=0;i<res.length; i++){
+        var feeditem = {}
+        var resitem = res[i]
+        //console.log(resitem.snapshotimageid)
+        feeditem.image = resitem.snapshotimageid
+        feeditem.comment = resitem.commentcontent
+        feeditem.title = resitem.name
+        feeditem.linkid = resitem.productid
+        feeditem.by = resitem.nickname
+        feeditem.authorid = resitem.token
+        //console.log(feeditem)
+        products.feed.push(feeditem)
       }
+      //console.log(products.feed)
+      callbackfun(products.feed)
     },
-    fail(err) {
-      console.log(err);
-      wx.showToast({
-        title: '加载feed流失败，请重新尝试',
-        icon: 'none',
-        mask: true
-      })
+    (err:any)=>{
+      alert("加载feed流失败，请重新尝试")
     },
-    complete(msg){
-      if(completecallback){
-        completecallback(filename)
-      }
-    }
-  })
+    skip,
+    take
+  )
+  // var filename = wx.env.USER_DATA_PATH + '/' + 'feed.json'
+  // const urlstr = baseurl + 'Immortal/GetFeed'
+  // wx.downloadFile({
+  //   url: urlstr,
+  //   filePath: filename,
+  //   timeout: 1800000,
+  //   // filePath: wx.env.USER_DATA_PATH + '/' + item.fullName,
+  //   success(res) {
+  //     if (res.statusCode === 200) {
+  //       console.log(res)
+  //       // wx.hideLoading()
+  //       var FileSystemManager = wx.getFileSystemManager()
+  //       var jsonstring:string = FileSystemManager.readFileSync(filename, "utf-8")
+  //       // console.log(jsonstring)
+  //       var jsObj = JSON.parse(jsonstring)
+  //       products.feed = jsObj.data
+  //       callbackfun(products.feed)
+  //     }
+  //   },
+  //   fail(err) {
+  //     console.log(err);
+  //     wx.showToast({
+  //       title: '加载feed流失败，请重新尝试',
+  //       icon: 'none',
+  //       mask: true
+  //     })
+  //   },
+  //   complete(msg){
+  //     if(completecallback){
+  //       completecallback(filename)
+  //     }
+  //   }
+  // })
 }
 export const MapImageUrl = (id:string)=>{
   var result = baseurl + ("immortal/GetResourceImage?id=" + id).replace('//', '/')
@@ -472,6 +548,18 @@ export const MapTextUrl = (id:string)=>{
   return result
 }
 
+export const MapVideoUrl = (id:string)=>{
+  var result = baseurl + ("immortal/GetResourceVideo?id=" + id).replace('//', '/')
+  return result
+}
+
+export const alert = (msg:string, icon:"success"|"error" = "success", duration:number=2000)=>{
+  wx.showToast({
+    title: msg,
+    icon: icon,
+    duration: duration
+  })
+}
 
 export const weixinlogin = (callback:any, token:string, isnew:boolean)=>{
   console.log("func: utils.weixinlogin")
@@ -640,3 +728,18 @@ export const platform = ()=>{
   }
 }
 
+export const viewuserprofile = (usertoken:string)=>{
+  console.log(usertoken)
+  wx.navigateTo({
+    url: "/pages/userview/userview?usertoken=" + usertoken
+  })
+}
+
+export const gettopics = (success:any, failed:any)=>{
+  API.gettopics(success, failed)
+}
+
+export const arrayBufferToString = (buffer: ArrayBuffer): string => {
+  const uint8Array = new Uint8Array(buffer);
+  return uint8Array.reduce((str, byte) => str + String.fromCharCode(byte), '');
+};

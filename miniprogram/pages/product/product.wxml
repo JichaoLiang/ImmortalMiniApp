@@ -18,7 +18,7 @@
       <view class="tab-indicator"></view></view>
     </view>
     <view style="width: 100%;" wx:if="{{display=='introduction'}}">
-    <view style="width: 100%;margin-left:40rpx;margin-top:40rpx; ">
+    <view style="width: 100%;margin-left:40rpx;margin-top:40rpx; " bind:tap="onviewauthortap">
       <image style="width: 50rpx; height:50rpx;float:left;border-radius: 25rpx; margin-right: 10rpx;" src="{{product.author.image}}"></image>
         <view style="float:left;text-decoration: underline;margin-right: 20rpx;">
         {{product.author.name}}
@@ -65,7 +65,7 @@
       <view style="display: inline-block; position: absolute; z-index: 999; margin:40rpx; color:white;">{{"《" + item.title + "》"}}</view>
       <image src="{{item.image}}" bind:tap="productDetail" data-prodid="{{item.linkid}}"></image>
       <text>{{item.comment}}</text>
-      <text style="font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline;">{{item.by}}</text>
+      <text style="font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline;" data-id="{{item.authorid}}" bind:tap="onviewuser">{{item.by}}</text>
       </view>
     </view>
 

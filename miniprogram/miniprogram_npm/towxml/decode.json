@@ -1,0 +1,12 @@
+{
+  "component": true,
+  "usingComponents": {
+    "decode": "/miniprogram_npm/towxml/decode",
+    "audio-player": "/miniprogram_npm/towxml/audio-player/audio-player",
+    "latex": "/miniprogram_npm/towxml/latex/latex",
+    "table": "/miniprogram_npm/towxml/table/table",
+    "todogroup": "/miniprogram_npm/towxml/todogroup/todogroup",
+    "yuml": "/miniprogram_npm/towxml/yuml/yuml",
+    "img": "/miniprogram_npm/towxml/img/img"
+  }
+}
