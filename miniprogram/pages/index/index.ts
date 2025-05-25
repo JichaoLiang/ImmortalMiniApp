@@ -29,38 +29,38 @@ Component({
     categorys:[
       {
         title: "推荐",
-        id: "1"
+        id: "推荐"
       },
       {
         title: "密室逃脱",
-        id: "2"
+        id: "密室逃脱"
       },
       {
         title: "互动小说",
-        id: "3"
+        id: "互动小说"
       },
       {
         title: "if剧本",
-        id: "4"
+        id: "if剧本"
       },
       {
         title: "故事相册",
-        id: "5"
+        id: "故事相册"
       },
       {
         title: "明星代言",
-        id: "6"
+        id: "明星代言"
       },
       {
         title: "虚拟女友",
-        id: "6"
+        id: "虚拟女友"
       },
       {
         title: "虚拟男友",
-        id: "6"
+        id: "虚拟男友"
       },
     ],
-    selectedcategory: "1",
+    selectedcategory: "推荐",
 
     fixedbutton:[
       {
@@ -127,7 +127,10 @@ Component({
     },
     showCate(evt:any){
       var cateid = evt.target.dataset.cateid
-      this.setData({selectedcategory:cateid})
+      if(cateid != this.data.selectedcategory){
+        this.setData({selectedcategory:cateid})
+        this.fetchfeed()
+      }
       // this.data.selectedcategory = cateid
       
       // wx.showToast({title: evt.target.dataset.cateid, //弹框内容
@@ -154,13 +157,18 @@ Component({
       }
     },
     fetchfeed(){
-      fetchFeedList((feed:any)=>{
+      var tag = [this.data.selectedcategory]
+      if(tag[0] == this.data.categorys[0].id){
+        tag = []
+      }
+      console.log(tag)
+      fetchFeedList(tag, (feed:any)=>{
         for (var i = 0; i < feed.length; i++){
           feed[i].image = MapImageUrl(feed[i].image)
         }
-        console.log(feed)
         this.setData({feedstream: feed})
-      }, (feed:any)=>{})
+      }, (feed:any)=>{
+      })
     },
     onShow(options){
       /* @if env=='miniprogram' */

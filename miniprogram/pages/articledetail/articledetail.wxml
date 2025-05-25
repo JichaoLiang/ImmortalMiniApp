@@ -9,7 +9,7 @@
         <view class="title" style="display: block;" bind:tap="navigateToDetail" data-id="{{article.idarticle}}">{{item.title}}</view>
         <view style="display: flex;">
           <view class="author" style="margin-right:10rpx;text-decoration:underline;color:#0000f0" bind:tap="onviewuser" data-id="{{article.token}}">{{article.nickname}}</view>
-          <view class="time" bind:tap="navigateToDetail" data-id="{{article.idarticle}}">{{article.create}}</view>
+          <view class="time" bind:tap="navigateToDetail" data-id="{{article.idarticle}}">@{{article.create}}</view>
         </view>
         <view class="author" style="margin-right:10rpx;font-size:25rpx;text-decoration:underline;color:#a0a0a0" bind:tap="onviewuser" data-id="{{article.token}}">{{article.signature}}</view>
         </view>
@@ -32,7 +32,7 @@
       <view class="title" style="display: block;" bind:tap="navigateToDetail" data-id="{{art.idarticle}}">{{art.title}}</view>
       <view style="display: flex;">
         <view class="author" style="margin-right:10rpx;text-decoration:underline;color:#0000f0" bind:tap="onviewuser" data-id="{{art.token}}">{{art.nickname}}</view>
-        <view class="time" bind:tap="navigateToDetail" data-id="{{art.idarticle}}">{{art.create}}</view>
+        <view class="time" bind:tap="navigateToDetail" data-id="{{art.idarticle}}">@{{art.create}}</view>
       </view>
       <view class="author" style="margin-right:10rpx;font-size:25rpx;text-decoration:underline;color:#a0a0a0" bind:tap="onviewuser" data-id="{{art.token}}">{{art.signature}}</view>
       </view>

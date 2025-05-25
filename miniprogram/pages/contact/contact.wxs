@@ -1,0 +1,28 @@
+var formatTime = (timestamp)=> {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diff = now - date;
+  
+  if (diff < 86400000 && date.getDate() === now.getDate()) {
+    // 今天
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  } else if (diff < 86400000 * 2 && date.getDate() === now.getDate() - 1) {
+    // 昨天
+    return '昨天';
+  } else if (diff < 86400000 * 7) {
+    // 一周内
+    const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    return days[date.getDay()];
+  } else {
+    // 更早
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${month}月${day}日`;
+  }
+}
+
+module.exports = {
+  formatTime:formatTime
+}

@@ -1,0 +1,235 @@
+<!--pages/cardtemplate/cardtemplate.wxml-->
+
+<template name="ohno">
+  <view class="ohno-container">
+    <view class="ohno-image-wrapper">
+      <image class="ohno-centered-image" src="{{ohnoimg}}" mode="aspectFit"></image>
+    </view>
+  </view>
+</template>
+
+<template name="usercard">
+  <view class="card-card">
+    <!-- 整体采用flex布局，头像在左，信息在右 -->
+    <view class="card-card-content" data-id="{{token}}" bind:tap="onusercardclick">
+      <!-- 左侧头像 -->
+      <view class="card-avatar-section">
+        <image class="card-avatar" src="{{avatar}}" mode="aspectFill"></image>
+      </view>
+      
+      <!-- 右侧信息区域 -->
+      <view class="card-info-section">
+        <view class="card-name-line">
+          <text class="card-nickname">{{nickName}}</text>
+        </view>
+<!--         
+        <view class="card-id-line" wx:if="{{isMySelf}}">
+          <view class="card-user-id single-line-ellipsis" bind:tap="onuseridtap">{{userid}}</view>
+        </view>
+        <view wx:if="{{isMySelf}}" class="card-phone-line">
+          <text class="card-phone">{{phonenumber}}</text>
+        </view> -->
+        
+        <view class="card-signature">
+          <text>{{signature}}</text>
+        </view>
+        <!-- <view wx:if="{{!isMySelf}}" class="card-action-bar">
+          <button class="card-send-btn">私信</button>
+          <button wx:if="{{!c2cstatus.follow}}" class="card-send-btn" bind:tap="onfollowclick">+关注</button>
+          <button wx:else class="card-send-btn btn-neg" bind:tap="onunfollowclick">已关注</button>
+        </view> -->
+      </view>
+    </view>
+    
+    <!-- 底部装饰线 -->
+    <view class="card-divider"></view>
+  </view>
+</template>
+
+<!-- 头像卡片  -->
+<template name="miniusercard">
+  <view class="card-mini-card">
+    <!-- 整体采用flex布局，头像在左，信息在右 -->
+    <view class="card-mini-card-content" data-id="{{token}}" bind:tap="onusercardclick">
+      <!-- 左侧头像 -->
+      <view class="card-mini-avatar-section">
+        <image class="card-mini-avatar" src="{{avatar}}" mode="aspectFill"></image>
+      </view>
+      
+      <!-- 右侧信息区域 -->
+      <view class="card-mini-info-section">
+        <view class="card-mini-name-line">
+          <text class="card-mini-nickname">{{nickName}}</text>
+          <text style="color:#a3a3a3;margin-left: 15rpx; font-size: 20rpx;">@{{time}}</text>
+        </view>
+<!--         
+        <view class="card-id-line" wx:if="{{isMySelf}}">
+          <view class="card-user-id single-line-ellipsis" bind:tap="onuseridtap">{{userid}}</view>
+        </view>
+        <view wx:if="{{isMySelf}}" class="card-phone-line">
+          <text class="card-phone">{{phonenumber}}</text>
+        </view> -->
+        
+        <view class="card-mini-signature">
+          <text>{{signature}}</text>
+        </view>
+        <!-- <view wx:if="{{!isMySelf}}" class="card-action-bar">
+          <button class="card-send-btn">私信</button>
+          <button wx:if="{{!c2cstatus.follow}}" class="card-send-btn" bind:tap="onfollowclick">+关注</button>
+          <button wx:else class="card-send-btn btn-neg" bind:tap="onunfollowclick">已关注</button>
+        </view> -->
+      </view>
+    </view>
+    
+    <!-- 底部装饰线 -->
+    <view class="card-mini-divider"></view>
+  </view>
+</template>
+
+<template name="productcard">
+  <view style="max-height: 240px; box-sizing: border-box;background-color: rgb(255, 255, 255);margin: 0rpx 20rpx 20rpx 20rpx">
+  
+    <view style="position: absolute; margin:40rpx; z-index: 999; font-weight: 900;color: white; font-size:x-large;">{{"《" + name + "》"}}</view>
+        <view style="position: absolute; max-width: 85%; margin:120rpx 70rpx 120rpx 60rpx; z-index: 999; font-weight: 400;color: white; ">{{description}}</view>
+        <image mode="aspectFill" style="width: 100%; opacity: 0.7;border-radius: 30rpx;" src="{{image}}"></image>
+        <button wx:if="{{!dontshowgothrough}}" data-id="{{id}}" bind:tap="onproductclick" style="position: absolute; width:180rpx; padding:10rpx 20rpx;font-size: 30rpx; border-radius: 8rpx; margin:-100rpx 400rpx; color:#f0f0f0; background-color: #5e7de2;">点击浏览</button>
+    </view>
+</template>
+
+<template name="avatarcard">
+  <view class="card-avatar" data-id="{{token}}" bind:tap="onavartarclick">
+    <image class="card-avatar-image" style="{{!active?'opacity: 0.3;':''}}" src="{{avatarurl}}"></image>
+    <text class="card-avatar-nickname">{{nickname}}</text>
+  </view>
+</template>
+
+<template name="newproductcard">
+  <view class="card-view">
+  <view style="margin: 0rpx 20rpx 10rpx; ">
+    投稿了新作品，快来看看吧！
+  </view>
+  <view style="max-height: 240px; box-sizing: border-box;background-color: rgb(255, 255, 255);margin: 0rpx 20rpx 20rpx 20rpx">
+        <view style="position: absolute; margin:40rpx; z-index: 999; font-weight: 900;color: white; font-size:x-large;">{{"《" + name + "》"}}</view>
+        <view style="position: absolute; max-width: 85%; margin:120rpx 70rpx 120rpx 60rpx; z-index: 999; font-weight: 400;color: white; ">{{description}}</view>
+        <image mode="aspectFill" style="width: 100%; opacity: 0.7;border-radius: 30rpx;" src="{{pcoverimage}}"></image>
+        <button wx:if="{{!dontshowgothrough}}" data-id="{{pid}}" bind:tap="onproductclick" style="position: absolute; width:180rpx; padding:10rpx 20rpx;font-size: 30rpx; border-radius: 8rpx; margin:-100rpx 330rpx; color:#f0f0f0; background-color: #5e7de2;">点击浏览</button>
+    </view>
+  </view>
+</template>
+
+<template name="behaviorcard">
+  <view class="card-view">
+  <view wx:if="{{behavior=='like'}}" style="margin: 0rpx 20rpx 10rpx">
+    对作品 <text data-id="{{pid}}" bind:tap="onproductclick" style="text-decoration: underline; color: #3d82eb;">《{{name}}》</text> 点了赞: 
+  </view>
+  <view wx:if="{{behavior=='collection'}}" style="margin: 0rpx 20rpx 10rpx">
+    收藏了 <text data-id="{{pid}}" bind:tap="onproductclick" style="text-decoration: underline; color: #3d82eb;">《{{name}}》</text>: 
+  </view>
+  <view wx:if="{{behavior=='share'}}" style="margin: 0rpx 20rpx 10rpx">
+    转发了<text data-id="{{pid}}" bind:tap="onproductclick" style="text-decoration: underline; color: #3d82eb;">《{{name}}》</text>: 
+  </view>
+  
+  <view style="max-height: 240px; box-sizing: border-box;background-color: rgb(255, 255, 255);margin: 0rpx 20rpx 20rpx 20rpx">
+        <view style="position: absolute; margin:40rpx; z-index: 999; font-weight: 900;color: white; font-size:x-large;">{{"《" + name + "》"}}</view>
+        <view style="position: absolute; max-width: 85%; margin:120rpx 70rpx 120rpx 60rpx; z-index: 999; font-weight: 400;color: white; ">{{description}}</view>
+        <image mode="aspectFill" style="width: 100%; opacity: 0.7;border-radius: 30rpx;" src="{{pcoverimage}}"></image>
+        <button wx:if="{{!dontshowgothrough}}" data-id="{{pid}}" bind:tap="onproductclick" style="position: absolute; width:180rpx; padding:10rpx 20rpx;font-size: 30rpx; border-radius: 8rpx; margin:-100rpx 330rpx; color:#f0f0f0; background-color: #5e7de2;">点击浏览</button>
+  </view>
+  </view>
+</template>
+
+<template name="commentcard">
+  <view class="card-view">
+  <view style="margin: 0rpx 20rpx 10rpx">
+    对作品 <text data-id="{{pid}}" bind:tap="onproductclick" style="text-decoration: underline; color: #3d82eb;">《{{name}}》</text> 发表了评论: 
+  </view>
+    <view data-id="{{pid}}" bind:tap="onproductclick" class="comment-card {{hasImage ? 'with-image' : ''}}">
+      <view class="comment-body {{hasImage ? 'with-image' : ''}}">
+        <!-- 左侧评论内容 -->
+        <view style="display: block;{{hasimage?'width:450rpx;':''}}">
+          <view class="comment-content" style="{{hasimage?'height:150rpx;':''}}">{{commentcontent}}</view>
+        </view>
+        <!-- 分隔线（只在有图片时显示） -->
+        <view wx:if="{{hasimage}}" class="divider"></view>
+        <!-- 右侧图片（如果有） -->
+        <view wx:if="{{hasimage}}" class="image-container">
+          <image class="comment-image" mode="aspectFill" src="{{snapshotimage}}"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<template name="articlecard">
+  <view class="card-view">
+    <view wx:if="{{!isreply}}" style="margin: 0rpx 20rpx 10rpx">
+      发表了 <text data-id="{{aid}}" bind:tap="onviewarticleclick" style="text-decoration: underline; color: #3d82eb;">《{{atitle==''?'文章':atitle}}》</text> 
+    </view>
+    <view wx:if="{{isreply}}" style="margin: 0rpx 20rpx 10rpx">
+      回复了 <text data-token="{{aputoken}}" bind:tap="onviewuserclick" style="text-decoration: underline; color: #3d82eb;">{{apunickname}}</text> 的 
+      <text data-id="{{aparentid}}" bind:tap="onviewarticleclick" style="text-decoration: underline; color: #3d82eb;">{{aptitle == ''?'文章':aptitle}}</text>
+    </view>
+    
+    <view data-id="{{aarticle}}" bind:tap="onviewarticleclick" class="comment-card">
+      <text>{{atitle}}</text>
+      <text>{{acontentpreview}}...</text>
+    </view>
+  </view>
+</template>
+
+
+<template name="followcard">
+  <view class="card-view">
+    <view style="margin: 0rpx 20rpx 10rpx">
+      关注了 <text data-id="{{utoken}}" bind:tap="onviewuserclick" style="text-decoration: underline; color: #3d82eb;">{{nickname}}</text> 
+    </view>
+  
+  <!-- 头像卡片  -->
+    <view data-id="{{utoken}}" bind:tap="onviewuserclick" class="card-mini-inline-card">
+      <!-- 整体采用flex布局，头像在左，信息在右 -->
+      <view class="card-mini-card-content" data-id="{{utoken}}" bind:tap="onusercardclick">
+        <!-- 左侧头像 -->
+        <view class="card-mini-avatar-section">
+          <image class="card-mini-avatar" src="{{image}}" mode="aspectFill"></image>
+        </view>
+        
+        <!-- 右侧信息区域 -->
+        <view class="card-mini-info-section">
+          <view class="card-mini-name-line">
+            <text class="card-mini-nickname">{{nickname}}</text>
+          </view>
+  <!--         
+          <view class="card-id-line" wx:if="{{isMySelf}}">
+            <view class="card-user-id single-line-ellipsis" bind:tap="onuseridtap">{{userid}}</view>
+          </view>
+          <view wx:if="{{isMySelf}}" class="card-phone-line">
+            <text class="card-phone">{{phonenumber}}</text>
+          </view> -->
+          
+          <view class="card-mini-signature">
+            <text>{{signature}}</text>
+          </view>
+          <!-- <view wx:if="{{!isMySelf}}" class="card-action-bar">
+            <button class="card-send-btn">私信</button>
+            <button wx:if="{{!c2cstatus.follow}}" class="card-send-btn" bind:tap="onfollowclick">+关注</button>
+            <button wx:else class="card-send-btn btn-neg" bind:tap="onunfollowclick">已关注</button>
+          </view> -->
+        </view>
+      </view>
+      
+      <!-- 底部装饰线 -->
+      <view class="card-mini-divider"></view>
+    </view>
+  </view>
+</template>
+
+<template name="producgridcard">
+    <view class="card-grid-container">
+      <view class="card-grid-item" wx:for="{{products}}" wx:for-item="item">
+        <view style="display: inline-block; position: absolute; z-index: 999; margin:40rpx; color:white;">{{"《" + item.name + "》"}}</view>
+        <image src="{{item.image}}" data-id="{{item.id}}" bind:tap="onproductclick"></image>
+        <text style="margin:5rpx;">{{item.time}}</text>
+        <text style="margin:5rpx;font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline; " bind:tap="onviewuserclick" data-id="{{item.author.id}}">{{item.author.name}}</text>
+      </view>
+    </view>
+</template>

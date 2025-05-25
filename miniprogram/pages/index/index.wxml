@@ -21,7 +21,7 @@
     <scroll-view show-scrollbar="true" scroll-x="true" style='background-color:rgb(190, 211, 233) ; height: 40px; display: flex; white-space:nowrap;flex-direction: column;'>
       <view style="border-radius: 5px; margin:2px; font-size: 12px;padding: 18.8rpx;display:inline-block;" wx:for="{{categorys}}" wx:key="title" wx:for-item="item"  data-cateid="{{item.id}}" bindtap="showCate" class="List {{selectedcategory==item.id?'active':''}}">{{item.title}}</view>
     </scroll-view>
-    <view class="grid-container" wx:if="{{selectedcategory=='1'?true:false}}">
+    <view class="grid-container" >
       <view class="grid-item" wx:for="{{feedstream}}" wx:for-item="item">
       <view style="display: inline-block; position: absolute; z-index: 999; margin:40rpx; color:white;">{{"《" + item.title + "》"}}</view>
       <image src="{{item.image}}" bind:tap="productDetail" data-prodid="{{item.linkid}}"></image>
@@ -29,8 +29,8 @@
       <text style="font-size: 25rpx;color:rgb(68, 84, 233); text-decoration: underline;" data-id="{{item.authorid}}" bind:tap="onviewuser">{{item.by}}</text>
       </view>
     </view>
-    
-    <view class="grid-container" wx:if="{{selectedcategory=='2'?true:false}}">
+<!--     
+    <view class="grid-container" wx:if="{{selectedcategory==categorys[1].id?true:false}}">
       <view class="grid-item" wx:for="{{categorys[1].feed}}" wx:for-item="item">
       <image src="{{item.image}}"></image>
       <text>{{item.comment}}</text>
@@ -38,7 +38,7 @@
       </view>
     </view>
     
-    <view class="grid-container" wx:if="{{selectedcategory=='3'?true:false}}">
+    <view class="grid-container" wx:if="{{selectedcategory==categorys[2].id?true:false}}">
       <view class="grid-item" wx:for="{{categorys[2].feed}}" wx:for-item="item">
       <image src="{{item.image}}"></image>
       <text>{{item.comment}}</text>
@@ -46,7 +46,7 @@
       </view>
     </view>
     
-    <view class="grid-container" wx:if="{{selectedcategory=='4'?true:false}}">
+    <view class="grid-container" wx:if="{{selectedcategory==categorys[3].id?true:false}}">
       <view class="grid-item" wx:for="{{categorys[3].feed}}" wx:for-item="item">
       <image src="{{item.image}}"></image>
       <text>{{item.comment}}</text>
@@ -54,12 +54,12 @@
       </view>
     </view>
     
-    <view class="grid-container" wx:if="{{selectedcategory=='5'?true:false}}">
+    <view class="grid-container" wx:if="{{selectedcategory==categorys[4].id?true:false}}">
       <view class="grid-item" wx:for="{{categorys[4].feed}}" wx:for-item="item">
       <image src="{{item.image}}"></image>
       <text>{{item.comment}}</text>
       <text style="font-size: 25rpx;color:rgb(55, 24, 230); text-decoration: underline;">{{item.by}}</text>
       </view>
-    </view>
+    </view> -->
   </view>
 </scroll-view>

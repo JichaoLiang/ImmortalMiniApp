@@ -2,7 +2,7 @@
 const app = getApp<IAppOption>()
 var prodlist = require("../../utils/products.js")
 import * as API from "../../utils/serverAPI"
-import { listVideoIdByProductId, listAudioIdByProductId, viewuserprofile, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, platform } from "../../utils/util"
+import { alert, viewproductlist, listVideoIdByProductId, listAudioIdByProductId, viewuserprofile, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, platform } from "../../utils/util"
 Page({
 
   /**
@@ -325,6 +325,22 @@ Page({
         })
       })
     },
+  loadTags(){
+    API.GetTagByProductId(this.data.productid, (data)=>{
+      console.log(data)
+      this.data.product.tags = data.data
+      this.setData({
+        product: this.data.product
+      })
+    },(err)=>{
+      console.log(err)
+      alert("获取产品标签失败")
+    })
+  },
+  ontagclick(evt){
+    var tagval = evt.currentTarget.dataset.value
+    viewproductlist(tagval)
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -335,6 +351,7 @@ Page({
       prod.images[0].url = MapImageUrl(prod.images[0].url)
       prod.author.image = MapImageUrl(prod.author.image)
       this.setData({product: prod})
+      this.loadTags()
       this.loadC2PBehavior()
       this.loadComments()
     }, (err: any)=>{
@@ -350,7 +367,7 @@ Page({
     //   prod.images[0].url = MapImageUrl(prod.images[0].url)
     //   this.setData({product: prod})
     // })
-    fetchFeedList((feed:any)=>{
+    fetchFeedList([], (feed:any)=>{
       for (var i = 0; i < feed.length; i++){
         feed[i].image = MapImageUrl(feed[i].image)
       }

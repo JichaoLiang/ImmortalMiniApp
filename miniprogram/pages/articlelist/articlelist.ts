@@ -59,10 +59,6 @@ Page({
             if(typeof(data)=="object"){
               setTimeout(fetchfunc, 1000)
               return
-              var decoded = utils.arrayBufferToString(data)
-              console.log("array to decode:")
-              console.log(decoded)
-              element.contentkey = utils.truncateText(decoded, 80)
             }
             else{
               element.contentkey = utils.truncateText(data, 80)

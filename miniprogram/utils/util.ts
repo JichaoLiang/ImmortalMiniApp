@@ -71,6 +71,33 @@ function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export const reformattime = (timestring:string)=>{
+  return timestring.split('T')[0].replace('-', '/').replace('-', '/')
+}
+
+export const getLivefeedByMyToken = (token:string=resource.resource.user.id,  pageindex:number=0, success:any, failed:any, customizedusertoken:string="")=>{
+  if(customizedusertoken.length == 0){
+    API.listOnesIFollowed(token,(data)=>{
+      var ifollowed = data.data
+      var idlist = []
+      for(var i=0;i<ifollowed.length;i++){
+        var currentid = ifollowed[i].userid
+        if(idlist.indexOf(currentid) < 0){
+          idlist.push(currentid)
+        }
+      }
+      var tokenstr:string = idlist.join(",")
+      API.listUserLiveStream(tokenstr, pageindex, success, failed)
+    },(err)=>{
+      console.error(err)
+      alert("获取关注列表失败")
+    })
+  }
+  else{
+    API.listUserLiveStream(customizedusertoken, pageindex, success, failed)
+  }
+}
+
 export const listVideoIdByProductId = (productid: string, callback)=>{
   var result = []
   wx.request({
@@ -380,6 +407,32 @@ export const tryGetLocalUserInfo = ()=>{
     }
 }
 
+export const logview = (productid:string|undefined)=>{
+  if(!productid){
+    return
+  }
+  var key = 'productviewlog_'+resource.resource.user.id
+  var data:any[] = wx.getStorageSync(key)
+  if(!data){
+    data = []
+  }
+  data = data.filter((t)=>t.productid != productid)
+  data.push({
+    time: new Date(),
+    productid: productid
+  })
+  wx.setStorageSync(key, data)
+}
+
+export const getviewhistory = ()=>{
+  var key = 'productviewlog_'+resource.resource.user.id
+  var result = wx.getStorageSync(key)
+  if(!result){
+    return []
+  }
+  return result
+}
+
 export const requireUserInfo = (success:any, failed:any)=>{
   var loadfromcache = tryGetLocalUserInfo()
   if (loadfromcache) {
@@ -460,8 +513,8 @@ export const requireUserInfo = (success:any, failed:any)=>{
   }
 }
 
-export const GetHotProductFeedList = (success:any, failed:any, skip:number, take:number)=>{
-  API.GetHotProductFeed(
+export const GetHotProductFeedList = (tags:string[]=[], success:any, failed:any, skip:number, take:number)=>{
+  API.GetHotProductFeed(tags,
     (data)=>{
       success(data)
      } ,failed, skip, take)
@@ -474,12 +527,13 @@ export const truncateText = (text:string, maxLengh:number=18)=>{
   return text.substr(0, maxLengh) + "..."
 }
 
-export const fetchFeedList = (callbackfun:Function, completecallback:Function, skip:number=0, take:number=30)=>{
+export const fetchFeedList = (tags:string[], callbackfun:Function, completecallback:Function, skip:number=0, take:number=30)=>{
   // if (!heartbit("feed")){
   //   return callbackfun(products.feed)
   // }
   API.GetCommentFeed(
     "New",
+    tags,
     (res:any)=>{
       products.feed = []
       for(var i=0;i<res.length; i++){
@@ -495,7 +549,7 @@ export const fetchFeedList = (callbackfun:Function, completecallback:Function, s
         //console.log(feeditem)
         products.feed.push(feeditem)
       }
-      //console.log(products.feed)
+      console.log(products.feed)
       callbackfun(products.feed)
     },
     (err:any)=>{
@@ -729,9 +783,34 @@ export const platform = ()=>{
 }
 
 export const viewuserprofile = (usertoken:string)=>{
-  console.log(usertoken)
   wx.navigateTo({
     url: "/pages/userview/userview?usertoken=" + usertoken
+  })
+}
+
+export const viewproduct = (productid:string)=>{
+  wx.navigateTo({
+    url: "/pages/product/product?productid=" + productid
+  })
+}
+
+
+export const viewimdialog = (touser:string)=>{
+  wx.navigateTo({
+    url: "/pages/message/message?touser=" + touser
+  })
+}
+
+
+export const viewproductlist = (tags:string)=>{
+  wx.navigateTo({
+    url: "/pages/productlist/productlist?method=Hot&tags=" + tags
+  })
+}
+
+export const viewarticle = (articleid:string)=>{
+  wx.navigateTo({
+    url: "/pages/articledetail/articledetail?id=" + articleid
   })
 }
 

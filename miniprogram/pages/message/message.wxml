@@ -1,2 +1,62 @@
-<!--pages/message.wxml-->
-<text>pages/message.wxml</text>
+<!-- pages/chat/chat.wxml -->
+<view class="container">
+  <!-- 顶部标题栏 -->
+  <view class="header">
+    <view class="header-title">{{chatName}}</view>
+  </view>
+  
+  <!-- 聊天消息区域 -->
+  <scroll-view 
+    class="message-list" 
+    scroll-y="true" 
+    scroll-into-view="msg-{{lastMsgId}}"
+    scroll-with-animation="true"
+  >
+    <view wx:for="{{messages}}" wx:key="id" id="msg-{{item.id}}">
+      <!-- 时间分隔 -->
+      <view class="time-divider" wx:if="{{item.showTime}}">
+        {{item.time}}
+      </view>
+      
+      <!-- 对方消息 -->
+      <view class="message-item message-left" wx:if="{{!item.isMe}}">
+        <image class="avatar" src="{{item.avatar}}"></image>
+        <view class="message-content">
+          <view class="message-text">{{item.content}}</view>
+        </view>
+      </view>
+      
+      <!-- 我的消息 -->
+      <view class="message-item message-right" wx:else>
+        <view class="message-content">
+          <view class="message-text">{{item.content}}</view>
+        </view>
+        <image class="avatar" src="{{item.avatar}}"></image>
+      </view>
+    </view>
+  </scroll-view>
+  
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <!-- <view class="input-left">
+      <image class="icon" src="/images/voice.png"></image>
+      <image class="icon" src="/images/emoji.png"></image>
+      <image class="icon" src="/images/add.png"></image>
+    </view> -->
+    <input 
+      class="input-box" 
+      placeholder="输入消息..." 
+      value="{{inputValue}}"
+      bindinput="onInput"
+      bindconfirm="onsendmessage"
+      focus="{{inputFocus}}"
+    />
+    <view class="input-right">
+      <button 
+        class="send-btn" 
+        bindtap="onsendmessage"
+        disabled="{{!inputValue}}"
+      >发送</button>
+    </view>
+  </view>
+</view>

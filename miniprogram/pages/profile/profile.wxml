@@ -1,4 +1,6 @@
 <!--pages/profile/profile.wxml-->
+
+<import src="../templates/templates.wxml"></import>
 <view class="container">
   <view class="card">
     <!-- 整体采用flex布局，头像在左，信息在右 -->
@@ -14,15 +16,20 @@
           <text class="nickname">{{nickName}}</text>
         </view>
         
-        <view class="id-line">
-          <view class="user-id single-line-ellipsis" bind:tap="onuseridtap">{{userid}}</view>
+        <view class="id-line" wx:if="{{isMySelf}}">
+          <view class="user-id single-line-ellipsis" bind:tap="onuseridtap">{{usertoken}}</view>
         </view>
-        <view class="phone-line">
+        <view wx:if="{{isMySelf}}" class="phone-line">
           <text class="phone">{{phonenumber}}</text>
         </view>
         
         <view class="signature">
           <text>{{signature}}</text>
+        </view>
+        <view wx:if="{{!isMySelf}}" class="action-bar">
+          <button class="send-btn">私信</button>
+          <button wx:if="{{!c2cstatus.follow}}" class="send-btn" bind:tap="onfollowclick">+关注</button>
+          <button wx:else class="send-btn btn-neg" bind:tap="onunfollowclick">已关注</button>
         </view>
       </view>
     </view>
@@ -37,11 +44,14 @@
         bindtap="switchTab" 
         data-id="{{item.id}}"
       >
-        <text>{{item.title}}</text>
+        <text wx:if="{{item.title=='关注'}}">{{item.title}}({{userstatus.follow}})</text>
+        <text wx:elif="{{item.title=='粉丝'}}" >{{item.title}}({{userstatus.befollowed}})</text>
+        <text wx:else>{{item.title}}</text>
         <view class="tab-indicator"></view>
       </view>
     </block>
   </view>
+<!-- <template  is="usercard" data="{{avatar:'123', nickname:'456', signature:'789'}}"></template> -->
 
   <!-- 内容区域 - 使用swiper实现滑动切换 -->
   <swiper 
@@ -49,13 +59,63 @@
     duration="300" 
     bindchange="swiperChange"
     class="swiper-container"
+    style="width: 100%;height: 1000rpx;"
   >
     <block wx:for="{{tabs}}" wx:key="id">
       <swiper-item>
-        <view class="content">
+        <view class="content" style="background-color: #ffffff;">
           <!-- 这里是每个Tab页的具体内容 -->
-          <view class="content-title">{{item.contentTitle}}</view>
-          <view class="content-body">{{item.contentText}}</view>
+          <!-- <view class="content-title">{{item.contentTitle}}</view>
+          <view class="content-body">123{{item.contentText}}</view> -->
+          <view wx:if="{{item.id==2}}"  style="height:1500rpx;">
+              <template wx:if="{{followers.length == 0}}" is="ohno" data="{{ohnoimg:ohnoimg}}">
+              </template>
+            <view wx:for="{{followers}}" wx:key="id" wx:for-item="followeritem" data-id="{{followeritem.id}}" bind:tap="onviewuser">
+              <template  is="usercard" data="{{...followeritem}}">
+              </template>
+            </view>
+          </view>
+          
+          <view wx:if="{{item.id==3}}"  style="height:1500rpx;">
+              <template wx:if="{{followedbyme.length == 0}}" is="ohno" data="{{ohnoimg:ohnoimg}}">
+              </template>
+            <view wx:for="{{followedbyme}}" wx:key="id" wx:for-item="followeditem" data-id="{{followeditem.id}}" bind:tap="onviewuser">
+              <template  is="usercard" data="{{...followeditem}}">
+              </template>
+            </view>
+          </view>
+          <scroll-view scroll-y="true" style="height:1500rpx;" wx:if="{{item.id==1}}">
+          
+            <template wx:if="{{products.length == 0}}" is="ohno" data="{{ohnoimg:ohnoimg}}">
+            </template>
+            <view wx:for="{{products}}" wx:key="id" wx:for-item="productitem" data-id="{{productitem.id}}">
+              <template is="productcard" data="{{...productitem}}">
+              </template>
+            </view>
+          </scroll-view>
+
+          
+          <!-- <import src="../templates/templates.wxml"></import> -->
+          <scroll-view wx:if="{{item.id==0}}" scroll-y="true" style="height:1500rpx;">
+            <template wx:if="{{person.length == 1}}" is="ohno" data="{{ohnoimg}}"></template>
+            <view wx:for="{{feeddata}}">
+              <view style="margin:0rpx;">
+                <template is="miniusercard" data="{{token:item.token,avatar:item.simage,nickName:item.snickname,signature:item.ssignature,time: item.time}}"></template>
+              </view>
+              <view style="margin:5rpx;;">
+                <template is="newproductcard" wx:if="{{item.behavior=='newproduct'}}" data="{{...item}}" ></template>
+                <template is="commentcard" wx:if="{{item.behavior=='danmaku'||item.behavior=='comment'}}" data="{{...item}}"></template>
+                <template is="behaviorcard" wx:if="{{item.behavior=='like' || item.behavior=='collection' || item.behavior=='share'}}" data="{{...item}}" ></template>
+                <template is="articlecard" wx:if="{{item.behavior=='article'}}" data="{{...item}}" ></template>
+                <template is="followcard" wx:if="{{item.behavior=='follow'}}" data="{{...item}}" ></template>
+              </view>
+            </view>
+          </scroll-view>
+          <scroll-view wx:if="{{item.id==4}}" scroll-y="true" style="height:1500rpx;">
+            <template wx:if="{{history.length == 0}}" is="ohno" data="{{ohnoimg:ohnoimg}}">
+            </template>
+            <template wx:if="{{history.length > 0}}" is="producgridcard" data="{{products:history}}"></template>
+          </scroll-view>
         </view>
       </swiper-item>
     </block>

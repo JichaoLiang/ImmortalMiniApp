@@ -2,7 +2,7 @@ import * as config from './config'
 import { resource } from './resources';
 import * as utils from  './util'
 
-export const callserver = (routerpath:string, parameters:any, callback:any, failedcallback:any=(err)=>{}, namespace = 'immortalAPP')=>{
+export const callserver = (routerpath:string, parameters:any, callback:any, failedcallback:any=(err)=>{}, namespace = 'immortalAPP', timeout=300000)=>{
   var url = config.baseurl + namespace + '/' + routerpath;
   var firstparam = true;
   for (const key in parameters) {
@@ -19,14 +19,15 @@ export const callserver = (routerpath:string, parameters:any, callback:any, fail
   }
   console.log("API access: ")
   console.log(url)
-  wx.request({
+  return wx.request({
     url: url, // 开发者服务器接口地址
     method: 'GET', // HTTP 请求方法，默认为 GET
     header: {
       'content-type': 'application/json' // 设置请求的 header，默认为 application/json
     },
+    timeout: timeout,
     success(res) {
-      // console.log(res.data); // 接口调用成功的回调函数
+      console.log(res); // 接口调用成功的回调函数
       var code = res.statusCode
       console.log(code)
       if (code != 200){
@@ -41,7 +42,9 @@ export const callserver = (routerpath:string, parameters:any, callback:any, fail
       console.error(err); // 接口调用失败的回调函数
       failedcallback(err);
     },
-    complete() {
+    complete(data) {
+      console.log(`server call compete: ${url}`)
+      console.log(data)
     }
     });
 }
@@ -146,6 +149,39 @@ export const newarticle = (topic:string, title:string, richtext:string, parent:s
   })
 }
 
+export const listfollowers = (viewtoken:string, success:any,failed:any, pageindex:number=0) =>{
+  var token = resource.user.id
+  callserver("ListFollower", {
+    token:token,
+    viewtoken: viewtoken,
+    pageindex: pageindex
+  }, (data:any)=>{
+    success(data)
+  }, failed)
+}
+
+export const listOnesIFollowed = (viewtoken:string, success:any,failed:any, pageindex:number=0) =>{
+  var token = resource.user.id
+  callserver("ListOnesIFollowed", {
+    token:token,
+    viewtoken: viewtoken,
+    pageindex: pageindex
+  }, (data:any)=>{
+    success(data)
+  }, failed)
+}
+
+export const listUserLiveStream = (viewtokens:string, pageindex:number=0, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("ListUserLiveStream",{
+    token: token,
+    tokens:viewtokens,
+    pageindex: pageindex
+  }, (data)=>{
+    success(data)
+  }, failed)
+}
+
 export const loadtopics = (success:any, failed: any, isbroadcast:boolean=false)=>{
   callserver("GetArticleTopics",{
     isbroadcast:isbroadcast,
@@ -178,7 +214,7 @@ export const loadarticeinfo = (articleid:string, success:any, failed:any)=>{
   }, success, failed)
 }
 
-export const GetProductFeed = (method:string, success:any, failed:any, skip:number, take:number)=>{
+export const GetProductFeed = (method:string, tags:string[]=[], success:any, failed:any, skip:number, take:number)=>{
   if(!method){
     method = "Hot"
   }
@@ -192,27 +228,48 @@ export const GetProductFeed = (method:string, success:any, failed:any, skip:numb
   callserver("GetProductFeed",{
     method: method,
     token:token,
+    tags: tags.join(','),
     skip:skip,
     take:take
   }, success, failed)
 }
 
-export const GetHotProductFeed = (success:any, failed:any, skip:number, take:number)=>{
-  GetProductFeed("Hot", success, failed, skip, take)
+export const GetHotProductFeed = (tags=[], success:any, failed:any, skip:number, take:number)=>{
+  GetProductFeed("Hot", tags, success, failed, skip, take)
 }
 
-export const GetCollectProductFeed = (success:any, failed:any, skip:number, take:number)=>{
-  GetProductFeed("Collect", success, failed, skip, take)
+export const GetCollectProductFeed = (tags=[], success:any, failed:any, skip:number, take:number)=>{
+  GetProductFeed("Collect", tags, success, failed, skip, take)
 }
 
-export const GetCommentFeed = (method:string,success:any, failed:any, skip:number, take:number)=>{
+export const GetCommentFeed = (method:string, tags:string[], success:any, failed:any, skip:number, take:number)=>{
   var token = resource.user.id
   callserver("GetCommentFeedStream", {
     method:method,
     token:token,
+    tags:escape(tags.join(",")),
     skip:skip,
     take:take,
   }, success, failed)
+}
+
+export const GetTagByProductId = (productid:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("GetTagByProductId", {
+    productid:productid,
+    token:token,
+  }, success, failed)
+}
+
+export const GetProductByAuthorID = (authortoken:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("GetProductListByAuthor", {
+    token:token,
+    viewtoken: authortoken,
+  }, (resp)=>{
+    var data = resp.data
+    success(data)
+  }, failed)
 }
 
 export const GetProductByPackageID = (id:string, success:any, failed:any)=>{
@@ -221,6 +278,8 @@ export const GetProductByPackageID = (id:string, success:any, failed:any)=>{
     id: id,
     token:token,
   }, (resp)=>{
+    console.log("resp")
+    console.log(resp)
     var data = resp.data
     if(data.length == 0){
       wx.showToast({

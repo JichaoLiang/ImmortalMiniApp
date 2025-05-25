@@ -1,6 +1,6 @@
 import { getAssetLoaderTypes } from "XrFrame/loader/AssetLoader"
 import { baseurl } from "../../utils/config"
-import { fileexists, fetchAideo, fetchVideo, fetchVideos, getCheckpointfilepathbyPackageiId, getProdById, MapImageUrl } from "../../utils/util"
+import { fileexists, fetchAideo, fetchVideo, fetchVideos, getCheckpointfilepathbyPackageiId, getProdById, MapImageUrl, logview } from "../../utils/util"
 import * as API from "../../utils/serverAPI"
 import { resource } from "../../utils/resources"
 
@@ -624,6 +624,7 @@ tryloadcheckpoint(){
     // var product = getProdById(option.productid)
     var product = resource.currentProduct
     this.setData({ packageId: option.productid, continue: option.continue == "1", product:product })
+    logview(option.productid)
     console.log(this.data.packageId)
     var foundcheckpoint = false
     this.loadC2PBehavior()
@@ -657,7 +658,7 @@ tryloadcheckpoint(){
   onHide() {
     if (audio != undefined){
       try{
-      audio.stop()
+        audio.stop()
       }catch{}
     }
     try{
@@ -672,7 +673,19 @@ tryloadcheckpoint(){
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
+    if (audio != undefined){
+      try{
+        audio.stop()
+      }catch{}
+    }
+    try{
+      this.savecheckpoint()
+    }
+    catch(error){
+      console.log(error)
+    }
   },
+  
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作

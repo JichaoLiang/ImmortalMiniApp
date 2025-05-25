@@ -1,0 +1,291 @@
+/* pages/cardtemplate/cardtemplate.card-wxss */
+
+/* 名片卡整体样式保持不变 */
+.card-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.card-08);
+  overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* 新增卡片内容容器，使用flex布局 */
+.card-card-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* 调整头像区域样式 */
+.card-avatar-section {
+  margin-right: 10px;
+}
+
+.card-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #f0f0f0;
+}
+
+/* 调整信息区域样式 */
+.card-info-section {
+  flex: 1;
+  text-align: left;
+}
+
+.card-name-line {
+  margin-bottom: 6px;
+}
+
+.card-nickname {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-id-line {
+  margin-bottom: 0px;
+}
+
+.card-user-id {
+  font-size: 14px;
+  color: #999;
+}
+
+.card-signature {
+  padding: 0px 0;
+  font-size: 15px;
+  color: #666;
+  line-height: 1.card-4;
+}
+
+/* 装饰线样式保持不变 */
+.card-divider {
+  height: 2px;
+  background: linear-gradient(to right, #83e288, #57b419);
+  margin-top: 5px;
+  border-radius: 2px;
+}
+.card-phone-line {
+  margin-bottom: 8px;
+}
+
+.card-phone {
+  font-size: 14px;
+  color: #666;
+}
+
+.card-single-line-ellipsis {
+  white-space: nowrap;      /* 禁止换行 */
+  overflow: hidden;         /* 隐藏溢出内容 */
+  text-overflow: ellipsis;  /* 显示省略号 */
+  width: 390rpx;           /* 必须设置宽度 */
+}
+
+/* 容器样式 - 可以根据实际父容器调整 */
+.ohno-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: #ffffff;
+}
+
+/* 图片容器 - 自适应填满父容器 */
+.ohno-image-wrapper {
+  flex: 1; /* 填满剩余空间 */
+  display: flex;
+  justify-content: center; /* 水平居中 */
+}
+
+/* 图片样式 */
+.ohno-centered-image {
+  max-width: 100%; /* 图片最大宽度不超过容器 */
+  max-height: 100%; /* 图片最大高度不超过容器 */
+}
+
+.card-avatar{
+  margin:20rpx;
+  display: inline-block;
+}
+.card-avatar-image{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #f0f0f0;
+}
+.card-avatar-nickname{
+  display: block;
+  text-align: center;
+  font-size: 25rpx;
+}
+.card-view{
+  margin: 30rpx;
+  border-bottom: 1px solid #d9e6f8;
+}
+
+
+/* mini card */
+.card-mini-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.card-mini-08);
+  overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.card-mini-inline-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: #e5f2f8;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.card-mini-08);
+  overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+  align-self: center;
+}
+
+/* 新增卡片内容容器，使用flex布局 */
+.card-mini-card-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* 调整头像区域样式 */
+.card-mini-avatar-section {
+  margin-right: 10px;
+}
+
+.card-mini-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #f0f0f0;
+}
+
+/* 调整信息区域样式 */
+.card-mini-info-section {
+  flex: 1;
+  text-align: left;
+}
+
+.card-mini-name-line {
+  margin-bottom: 6px;
+}
+
+.card-mini-nickname {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-mini-id-line {
+  margin-bottom: 0px;
+}
+
+.card-mini-user-id {
+  font-size: 14px;
+  color: #999;
+}
+
+.card-mini-signature {
+  padding: 0px 0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.card-mini-4;
+}
+
+/* 装饰线样式保持不变 */
+.card-mini-divider {
+  height: 1px;
+  background: linear-gradient(to right, #ffffff, #e0e0e0);
+  margin-top: 5px;
+  border-radius: 2px;
+}
+
+/* 评论卡片 */
+.comment-card {
+  background-color: #e5f2f8;
+  margin: 0rpx 20rpx 20rpx 20rpx;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.comment-body {
+  display: flex;
+}
+
+
+/* 评论内容 */
+.comment-content {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333;
+  line-height: 1.6;
+  padding-right: 0; /* 移除原有右padding */
+  align-self: center;
+}
+
+/* 图片容器 */
+.image-container {
+  width:180rpx;
+  height: 320rpx; /* 与分隔线高度一致 */
+  flex-shrink: 0;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.divider {
+  width: 1rpx;
+  height: 160rpx;
+  background-color: #eee;
+  margin: 0 20rpx;
+  align-self: center;
+}
+
+.comment-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background-color: #f5f5f5;
+}
+
+
+.card-grid-container{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 16rpx;
+  justify-content: space-between;
+}
+
+.card-grid-item{
+  display:flex;
+  width: 49%;
+  flex-direction: column;
+  box-sizing:  border-box;
+  margin-top: 16rpx;
+}
+
+.card-grid-item > image {
+  width: 95%;
+  margin: 5rpx;
+  border-radius:  15rpx 15rpx 15rpx 15rpx;
+}
+
+.card-view-content{
+  position: absolute;
+  top: 120rpx;
+  height: 100%;
+  overflow-y: scroll;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  background-color: #f8f9fa;
+}

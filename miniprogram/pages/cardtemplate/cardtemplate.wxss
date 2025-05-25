@@ -1,0 +1,86 @@
+/* pages/cardtemplate/cardtemplate.wxss */
+
+/* 名片卡整体样式保持不变 */
+.card {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* 新增卡片内容容器，使用flex布局 */
+.card-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* 调整头像区域样式 */
+.avatar-section {
+  margin-right: 20px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #f0f0f0;
+}
+
+/* 调整信息区域样式 */
+.info-section {
+  flex: 1;
+  text-align: left;
+}
+
+.name-line {
+  margin-bottom: 6px;
+}
+
+.nickname {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.id-line {
+  margin-bottom: 12px;
+}
+
+.user-id {
+  font-size: 14px;
+  color: #999;
+}
+
+.signature {
+  padding: 10px 0;
+  font-size: 15px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 装饰线样式保持不变 */
+.divider {
+  height: 4px;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  margin-top: 20px;
+  border-radius: 2px;
+}
+.phone-line {
+  margin-bottom: 8px;
+}
+
+.phone {
+  font-size: 14px;
+  color: #666;
+}
+
+.single-line-ellipsis {
+  white-space: nowrap;      /* 禁止换行 */
+  overflow: hidden;         /* 隐藏溢出内容 */
+  text-overflow: ellipsis;  /* 显示省略号 */
+  width: 390rpx;           /* 必须设置宽度 */
+}

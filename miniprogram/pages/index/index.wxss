@@ -30,6 +30,7 @@ page {
 
 .grid-container{
   display: flex;
+  width: 90%;
   flex-wrap: wrap;
   margin: 16rpx;
   justify-content: space-between;

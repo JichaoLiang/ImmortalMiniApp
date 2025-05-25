@@ -43,6 +43,7 @@ Page({
       data.image = utils.MapImageUrl(data.image)
       data.nickname = utils.truncateText(data.nickname, 15)
       data.signature = utils.truncateText(data.signature, 30)
+      data.create = utils.reformattime(data.create)
       utils.fetchResourceTxt(richtextkey,(res)=>{
         data.richtext = res
         this.setData({
@@ -79,6 +80,7 @@ Page({
       for(var i = 0;i< res.data.length; i++){
         var data= res.data[i]
         var richtextkey = data.contentkey
+        data.create = utils.reformattime(data.create)
         if(data.image){
           data.image = utils.MapImageUrl(data.image)
         }

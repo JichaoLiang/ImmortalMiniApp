@@ -1,5 +1,5 @@
 /* pages/profile/profile.wxss */
-
+@import "../templates/templates.wxss"
 .power {
   margin-top: 30rpx;
   border-radius: 5px;
@@ -27,7 +27,7 @@
   display: flex;
   align-items: center;
   justify-content:unset;
-  min-height: 100vh;
+  min-height: 100%;
   background-color: #f5f5f5;
   padding: 20px;
   box-sizing: border-box;
@@ -97,6 +97,7 @@
 
 /* 装饰线样式保持不变 */
 .divider {
+  width: auto;
   height: 4px;
   background: linear-gradient(to right, #6a11cb, #2575fc);
   margin-top: 20px;
@@ -128,7 +129,7 @@
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 10;
-  margin: 20rpx;
+  margin: 20rpx 20rpx 0rpx 20rpx;
 }
 
 .tab-item {
@@ -164,7 +165,7 @@
   background-color: #07C160; /* 微信绿色作为激活色 */
 }
 .content {
-  padding: 30rpx;
+  padding: 0rpx;
 }
 
 .content-title {
@@ -178,4 +179,29 @@
   font-size: 28rpx;
   color: #666;
   line-height: 1.6;
+}
+.send-btn {
+  height: 60rpx;
+  max-width: 170rpx;
+  margin-left: 30rpx;
+  line-height: 30rpx;
+  background-color: #1989fa;
+  color: #fff;
+  border-radius: 25rpx;
+  font-size: 25rpx;
+}
+
+.send-btn[disabled] {
+  background-color: #a0e8c3;
+  color: #fff;
+  opacity: 0.7;
+}
+
+.btn-neg {
+  background-color: #f0f0f0;
+  color: #808080;
+}
+
+.action-bar{
+  display:flex;
 }

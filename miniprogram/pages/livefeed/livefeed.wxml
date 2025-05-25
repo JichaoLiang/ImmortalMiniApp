@@ -1,0 +1,23 @@
+<!--pages/livefeed/livefeed.wxml-->
+<import src="../templates/templates.wxml"></import>
+
+<scroll-view show-scrollbar="true" scroll-x="true" style='background-color:#f0f0f0;height: 250rpx; display: flex; white-space:nowrap;flex-direction: column;'>
+        <!-- <view style="border-radius: 5px; margin:2px; font-size: 12px;padding: 18.8rpx;display:inline-block;" wx:for="{{categorys}}" wx:key="title" wx:for-item="item"  data-cateid="{{item.id}}" bindtap="showCate" class="List {{selectedcategory==item.id?'active':''}}">{{item.title}}</view> -->
+        <template is="avatarcard" wx:for="{{person}}" data="{{...item}}"></template>
+</scroll-view>
+<scroll-view scroll-y="true" style="height: 1100rpx;">
+  <template wx:if="{{person.length == 1}}" is="ohno" data="{{ohnoimg}}"></template>
+  <view wx:for="{{feeddata}}">
+    <view style="margin:0rpx;">
+      <template is="miniusercard" data="{{token:item.token,avatar:item.simage,nickName:item.snickname,signature:item.ssignature, time:item.time}}"></template>
+    </view>
+    <view style="margin:5rpx;;">
+      <template is="newproductcard" wx:if="{{item.behavior=='newproduct'}}" data="{{...item}}" ></template>
+      <template is="commentcard" wx:if="{{item.behavior=='danmaku'||item.behavior=='comment'}}" data="{{...item}}"></template>
+      <template is="behaviorcard" wx:if="{{item.behavior=='like' || item.behavior=='collection' || item.behavior=='share'}}" data="{{...item}}" ></template>
+      <template is="articlecard" wx:if="{{item.behavior=='article'}}" data="{{...item}}" ></template>
+      <template is="followcard" wx:if="{{item.behavior=='follow'}}" data="{{...item}}" ></template>
+    </view>
+  </view>
+</scroll-view>
+

@@ -1,1 +1,130 @@
-/* pages/message.wxss */
+/* pages/chat/chat.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 1400rpx;
+  background-color: #f5f5f5;
+  padding: 0rpx;
+}
+
+/* 头部样式 */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #ededed;
+  border-bottom: 1px solid #dbdbdb;
+  width: 100%;
+}
+
+.header-back, .header-more {
+  width: 30px;
+  height: 30px;
+}
+
+.header-title {
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  width: 100%;
+}
+
+/* 消息列表样式 */
+.message-list {
+  flex: 1;
+  padding: 10px 15px;
+  overflow: auto;
+}
+
+.message-item {
+  display: flex;
+  margin: 15px;
+}
+
+.message-left {
+  justify-content: flex-start;
+}
+
+.message-right {
+  justify-content: flex-end;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+}
+
+.message-content {
+  max-width: 70%;
+  margin: 0 10px;
+}
+
+.message-text {
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.message-left .message-text {
+  background-color: white;
+}
+
+.message-right .message-text {
+  background-color: #95ec69;
+}
+
+.time-divider {
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+  margin: 15px 0;
+}
+
+/* 输入区域样式 */
+.input-area {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #dbdbdb;
+}
+
+.input-left, .input-right {
+  display: flex;
+  align-items: center;
+  width:200rpx;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  margin: 0 5px;
+}
+
+.input-box {
+  flex: 1;
+  height: 40px;
+  padding: 0 10px;
+  background-color: white;
+  border-radius: 5px;
+  margin: 0 10px;
+  width:450rpx;
+}
+
+.send-btn {
+  height: 40px;
+  line-height: 40px;
+  padding: 0 15px;
+  font-size: 14px;
+  background-color: #07c160;
+  color: white;
+  border-radius: 5px;
+}
+
+.send-btn[disabled] {
+  background-color: #cccccc;
+  color: #616161;
+}

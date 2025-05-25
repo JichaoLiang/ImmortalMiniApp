@@ -2,7 +2,9 @@
 <view class="title-bar {{title == '收藏' ? 'collect-bar':''}}">
   <view class="title-text {{title == '收藏' ? 'collect-text':''}}">
     {{title}}
+    <view wx:if="{{hastags}}" style="display: inline; color: rgb(42, 17, 184); text-decoration: underline;" >{{"[" + tags + "]"}}</view>
   </view>
+  
 </view>
 <view class="view-content">
 <view class="grid-container">

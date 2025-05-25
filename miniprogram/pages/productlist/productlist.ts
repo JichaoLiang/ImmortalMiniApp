@@ -9,6 +9,8 @@ Page({
   data: {
     feedstream: [],
     title: "热门",
+    tags: [],
+    hastags: false,
     offset:0,
     take: 30,
   },
@@ -28,10 +30,22 @@ Page({
    */
   onLoad(options) {
     var method = options.method
+    var tags = []
+    if(options.tags){
+      tags = options.tags?.split(',')
+    }
+    var hastags = options.tags!=undefined && tags.length > 0
 
+    
+    console.log(tags)
+    console.log(hastags)
+    this.setData({
+      tags: tags,
+      hastags: hastags
+    })
     if(method == "Hot"){
       this.setData({title: "热门"})
-      utils.GetHotProductFeedList((data)=>{
+      utils.GetHotProductFeedList(tags, (data)=>{
         console.log(data)
         var length = data.data.length
         if(length > 0){
@@ -67,7 +81,7 @@ Page({
     }
     else if (method == "Collect"){
       this.setData({title: "收藏"})
-      API.GetCollectProductFeed((data)=>{
+      API.GetCollectProductFeed([], (data)=>{
         console.log(data)
         var length = data.data.length
         if(length > 0){

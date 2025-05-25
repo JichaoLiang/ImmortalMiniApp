@@ -56,7 +56,10 @@
     "pages/userview/userview",
     "pages/articleedit/articleedit",
     "pages/articledetail/articledetail",
-    "pages/articlelist/articlelist"
+    "pages/articlelist/articlelist",
+    "pages/cardtemplate/cardtemplate",
+    "pages/livefeed/livefeed",
+    "pages/message/message"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -76,7 +79,7 @@
         "selectedIconPath": "images/house1.png"
       },
       {
-        "pagePath": "pages/examples/index",
+        "pagePath": "pages/livefeed/livefeed",
         "text": "关注",
         "iconPath": "images/icons/goods.png",
         "selectedIconPath": "images/icons/goods-active.png"
