@@ -14,6 +14,7 @@
   flex-wrap: wrap;
   margin: 16rpx;
   justify-content: space-between;
+  width:90%;
 }
 
 .grid-item{
@@ -38,6 +39,7 @@
   padding-left: 30rpx;
   padding-right: 30rpx;
   background-color: #f8f9fa;
+  width:100%;
 }
 /* 标题栏容器 - 带浅色背景 */
 .title-bar {

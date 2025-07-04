@@ -2,6 +2,7 @@ var products = require('./products.js')
 import * as resource from './resources'
 import * as API from './serverAPI'
 import * as enums from './enum'
+import * as cacheutil from "./cacheman"
 import {baseurl, dummyaccount} from "./config"
 
 export const formatTime = (date: Date) => {
@@ -225,72 +226,119 @@ export const fetchResourceTxt = (id:string, success:any, failed:any)=>{
   })
 }
 
+export const tryCreateFolder = (file:string)=>{
+  var fs = wx.getFileSystemManager()
+  var folderpath = file.substring(0, file.lastIndexOf('/'))
+  try{
+    fs.mkdir({
+      dirPath: folderpath,
+      recursive: true
+    })
+  }catch{}
+}
+
 export const fetchVideo = (packageid: string, videoid: string, callback: any, completecallback:any)=> {
-  const filename = wx.env.USER_DATA_PATH + '/' + packageid + '_' + videoid + ".mp4"
-  console.log(filename)
-  if (fileexists(filename)) {
-    callback(filename)
-    completecallback(filename)
-    return
-  }
+  var key =  packageid + '_' + videoid + ".mp4"
   const urlstr =  baseurl + 'Immortal/GetVideo?packageid=' + packageid + '&videoid=' + videoid
-  wx.downloadFile({
-    url: urlstr,
-    timeout: 1800000,
-    filePath: filename,
-    // filePath: wx.env.USER_DATA_PATH + '/' + item.fullName,
-    success(res) {
-      if (res.statusCode === 200) {
-        // wx.hideLoading()
-        callback(filename)
-      }
-    },
-    fail(err) {
-      console.log(err);
-      wx.showToast({
-        title: '下载失败，请重新尝试',
-        icon: 'none',
-        mask: true
-      })
-    },
-    complete(msg){
-      completecallback(filename)
-    }
+  cacheutil.getfile(key, urlstr, (filepath)=>{
+    callback(filepath)
+  }, (err)=>{
+    console.log(err);
+    wx.showToast({
+      title: '下载失败，请重新尝试',
+      icon: 'none',
+      mask: true
+    })
+  }, (filepath)=>{
+    completecallback(filepath)
   })
 }
+
 export const fetchAideo = (packageid: string, audeoid: string, callback: any, completecallback:any)=> {
-  const filename = wx.env.USER_DATA_PATH + '/' + packageid + '_' + audeoid + ".mp3"
-  if (fileexists(filename)) {
-    callback(filename)
-    completecallback(filename)
-    return
-  }
+  var key =  packageid + '_' + audeoid + ".mp3"
   const urlstr = baseurl + 'Immortal/GetAudio?packageid=' + packageid + '&audioid=' + audeoid
-  wx.downloadFile({
-    url: urlstr,
-    filePath: filename,
-    timeout: 1800000,
-    // filePath: wx.env.USER_DATA_PATH + '/' + item.fullName,
-    success(res) {
-      if (res.statusCode === 200) {
-        console.log(res)
-        // wx.hideLoading()
-        callback(filename)
-      }
-    },
-    fail(err) {
-      console.log(err);
-      wx.showToast({
-        title: '下载失败，请重新尝试',
-        icon: 'none',
-        mask: true
-      })
-    },
-    complete(msg){
-      completecallback(filename)
-    }
+  cacheutil.getfile(key, urlstr, (filepath)=>{
+    callback(filepath)
+  }, (err)=>{
+    console.log(err);
+    wx.showToast({
+      title: '下载失败，请重新尝试',
+      icon: 'none',
+      mask: true
+    })
+  }, (filepath)=>{
+    completecallback(filepath)
   })
 }
+
+// export const fetchVideo = (packageid: string, videoid: string, callback: any, completecallback:any)=> {
+//   const filename = wx.env.USER_DATA_PATH + '/' + packageid + '_' + videoid + ".mp4"
+//   tryCreateFolder(filename)
+//   console.log(filename)
+//   if (fileexists(filename)) {
+//     callback(filename)
+//     completecallback(filename)
+//     return
+//   }
+//   const urlstr =  baseurl + 'Immortal/GetVideo?packageid=' + packageid + '&videoid=' + videoid
+//   wx.downloadFile({
+//     url: urlstr,
+//     timeout: 1800000,
+//     filePath: filename,
+//     // filePath: wx.env.USER_DATA_PATH + '/' + item.fullName,
+//     success(res) {
+//       if (res.statusCode === 200) {
+//         // wx.hideLoading()
+//         callback(filename)
+//       }
+//     },
+//     fail(err) {
+//       console.log(err);
+//       wx.showToast({
+//         title: '下载失败，请重新尝试',
+//         icon: 'none',
+//         mask: true
+//       })
+//     },
+//     complete(msg){
+//       completecallback(filename)
+//     }
+//   })
+// }
+// export const fetchAideo = (packageid: string, audeoid: string, callback: any, completecallback:any)=> {
+//   const filename = wx.env.USER_DATA_PATH + '/' + packageid + '_' + audeoid + ".mp3"
+//   tryCreateFolder(filename)
+//   if (fileexists(filename)) {
+//     callback(filename)
+//     completecallback(filename)
+//     return
+//   }
+//   const urlstr = baseurl + 'Immortal/GetAudio?packageid=' + packageid + '&audioid=' + audeoid
+//   wx.downloadFile({
+//     url: urlstr,
+//     filePath: filename,
+//     timeout: 1800000,
+//     // filePath: wx.env.USER_DATA_PATH + '/' + item.fullName,
+//     success(res) {
+//       if (res.statusCode === 200) {
+//         console.log(res)
+//         // wx.hideLoading()
+//         callback(filename)
+//       }
+//     },
+//     fail(err) {
+//       console.log(err);
+//       wx.showToast({
+//         title: '下载失败，请重新尝试',
+//         icon: 'none',
+//         mask: true
+//       })
+//     },
+//     complete(msg){
+//       completecallback(filename)
+//     }
+//   })
+// }
 export const topercentage = (input:number)=>{
   var result = Math.round(input * 100) + '%'
   return result
@@ -638,7 +686,7 @@ export const weixinlogin = (callback:any, token:string, isnew:boolean)=>{
       console.log(imgfiletemppath)
       var tokens = imgfiletemppath.split('.');
       var extname = tokens[tokens.length - 1].toLowerCase();
-      API.uploadfile(imgfiletemppath, extname, (imgid)=>{
+      API.uploadAvatar(imgfiletemppath, extname, (imgid)=>{
         API.newuser(tk, imgid, tempinfo.nickname, tempinfo.phonenumber, tempinfo.signature,(result)=>{
           userinfo.id = tk;
           userinfo.imgid = imgid;
@@ -822,3 +870,30 @@ export const arrayBufferToString = (buffer: ArrayBuffer): string => {
   const uint8Array = new Uint8Array(buffer);
   return uint8Array.reduce((str, byte) => str + String.fromCharCode(byte), '');
 };
+
+export const isMe = (token: string): boolean =>{
+  // console.log(resource.resource.user.id.split('@@')[0])
+  // console.log(token)
+  return resource.resource.user.id.split('@@')[0] == token
+}
+
+var delaybuttondict = {}
+export const pressDelayedButton = (key:string, delaysec:number=0.3) =>{
+  var data = delaybuttondict[key]
+  if(!data){
+    delaybuttondict[key] = { timestamp: new Date().getTime(), delaysec: delaysec}
+    return true
+  }
+  else{
+    var time = data.timestamp
+    var delaysecsetting = data.delaysec * 1000
+    var span = new Date().getTime() - time
+    if(span > delaysecsetting){
+      delaybuttondict[key] = { timestamp: new Date().getTime(), delaysec: delaysec}
+      return true
+    }
+    else{
+      return false
+    }
+  }
+}

@@ -43,10 +43,20 @@ export const callserver = (routerpath:string, parameters:any, callback:any, fail
       failedcallback(err);
     },
     complete(data) {
-      console.log(`server call compete: ${url}`)
-      console.log(data)
+      // console.log(`server call compete: ${url}`)
+      // console.log(data)
     }
     });
+}
+
+export const getHeadline = (callback:any, failedcallback:any)=>{
+  callserver("GetHeaders", {}, (data)=>{
+    var result = data.result
+    callback(result)
+  }, (err)=>{
+    console.error(err)
+    failedcallback(err)
+  })
 }
 
 export const newuser = (weixinid:string, img:string, nicknam:string, phonenumber:string, signature:string, callback:any)=>{
@@ -124,6 +134,33 @@ export const uploadfile = (filepath:string, extname:string, callback:any, failca
   });
 }
 
+export const uploadAvatar = (filepath:string, extname:string, callback:any, failcallback:any=(err:any)=>{})=>{
+  console.log(config.baseurl + 'AvatarUpload?extname=' + extname)
+  wx.uploadFile({
+    url: config.baseurl + 'ImmortalAPP/FileUpload?extname=' + extname, // 替换为你的上传接口
+    filePath: filepath,
+    name: 'file', // 后端接收的文件字段名
+    formData: {
+      'user': 'test' // 可以添加额外的表单数据
+    },
+    success: (res) => {
+      if (res.statusCode === 200) {
+        var fileid = JSON.parse(res.data).result
+        callback(fileid)
+        // 可以在这里处理返回的数据
+        console.log('上传成功:', res.data);
+      } else {
+        console.log(res)
+        console.log('上传失败:', res.data);
+      }
+    },
+    fail: (err) => {
+      utils.alert("上传失败")
+      console.error('上传失败:', err);
+      failcallback(err)
+    }
+  });
+}
 export const gettopics = (success:any, failed:any)=>{
   callserver("GetArticleTopics",{
   }, (res)=>{
@@ -366,9 +403,11 @@ export const comment = (productid:string, content:string, replyuser: string, nod
   },success, failed)
 }
 
-export const listcomment = (productid:string, success:any, failed:any)=>{
+export const listcomment = (productid:string, success:any, failed:any, skip:number, take:number)=>{
   callserver("listcomments",{
     productid: productid,
+    skip: skip,
+    take: take
   },(data:any)=>{success(data.data)}, failed)
 }
 

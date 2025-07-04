@@ -85,6 +85,8 @@ Page({
   },
 
   onShow() {
+    // 清除所有监听
+    im.clearlistenerreqeusts()
     // 页面显示时刷新消息列表
     this.getConversations(this.listenupdates);
   },
@@ -144,6 +146,8 @@ Page({
   },
 
   onHide(){
+    // 清除所有监听
+    im.clearlistenerreqeusts()
     this.data.stoplistenflag = true
   },
   listenupdates(){
@@ -175,14 +179,15 @@ Page({
     this.setData({
       conversations: this.data.conversations
     })
+    if(this.data.conversations.length == 0){
+      return
+    }
     im.ListenBatch(tokenlist, tiemoffset, (data)=>{
       console.log(data)
       this.updatedialogs(data)
     }, (err)=>{
       console.error(err)
-      utils.alert("获取列表更新失败")
-    }, (task)=>{
-      this.data.listenrequest = task
+      // utils.alert("获取列表更新失败")
     })
   },
 

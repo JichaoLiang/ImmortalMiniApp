@@ -116,7 +116,7 @@ Page({
         var newitem = 
         {
           id: lastid,
-          isMe: msg.token == resource.user.id,
+          isMe: utils.isMe(msg.token),
           avatar: utils.MapImageUrl(msg.avatar),
           content: unescape(msg.message),
           time: msg.createtime,
@@ -138,9 +138,7 @@ Page({
       this.savedialogcache()
     },(err)=>{
       console.error(err)
-      utils.alert("收取信息失败")
-    }, (task)=>{
-      this.data.listenrequest = task
+      // utils.alert("收取信息失败")
     })
   },
   stoplisten(){
@@ -158,7 +156,8 @@ Page({
     }
   },
   onLoad: function(options) {
-    // 可以从options获取聊天对象信息
+    // 清除所有监听
+    im.clearlistenerreqeusts()
     if(options.touser){
       this.data.touser = options.touser
       this.loaduserinfo()

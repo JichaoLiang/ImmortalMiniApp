@@ -4,7 +4,6 @@
 
 .article {
   margin-bottom: 40rpx;
-  max-height:100%
 }
 
 .title {
@@ -113,7 +112,7 @@
 }
 
 .article-view{
-  position: fixed;
+  position: block;
   left:0rpx;
   top:0rpx;
   width: 100%;

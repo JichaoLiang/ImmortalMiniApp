@@ -29,7 +29,10 @@ Page({
 
     // person: [],
     feeddata: [],
-
+    feedstate:{  
+      nonextpage:false,
+      pageindex: 0,
+    },
 
     ohnoimg: utils.MapImageUrl("ohno.jpg"),
     products: [],
@@ -151,6 +154,8 @@ Page({
         }
         followers.push(f)
       }
+      console.log("followers")
+      console.log(followers)
       
       this.setData({
         followers: followers
@@ -200,7 +205,8 @@ Page({
   onLoad(options) {
     var usertoken = options.usertoken
     console.log(`user token: ${usertoken}`)
-    if(usertoken && resource.resource.user.id != usertoken){
+    if(usertoken && !utils.isMe(usertoken)){
+      console.log("not me")
       this.setData({isMySelf: false})
       API.ViewUserProfile(resource.resource.user.id, usertoken, (result)=>{
         console.log(result)
@@ -221,6 +227,7 @@ Page({
       })
     }
     else{
+      console.log("is me")
       this.init()
     }
   },
@@ -311,12 +318,28 @@ Page({
       )
     })
   },
+  onscrollbottom(){
+    if(!utils.pressDelayedButton("viewuser_onscrollbottom")){
+      return
+    }
+    this.loadlivefeed(true, this.data.usertoken)
+  },
   loadlivefeed(append:boolean=false, viewtoken:string=""){
-    utils.getLivefeedByMyToken(resource.resource.user.id, 0, (data)=>{
+    var pagesize = 10
+    var status = this.data.feedstate
+    if(status.nonextpage){
+      return
+    }
+    
+    utils.getLivefeedByMyToken(resource.resource.user.id, status.pageindex, (data)=>{
       // this.bindpersons(data.data)
       var converted = this.decoratefeed(data.data)
+      this.data.feeddata.push(...converted)
+      status.nonextpage = converted.length < pagesize
+      status.pageindex += 1
       this.setData({
-        feeddata: converted
+        feeddata: this.data.feeddata,
+        feedstate: status
       })
     }, (err)=>{
       console.error(err)
@@ -336,7 +359,6 @@ Page({
     utils.viewproduct(productid)
   },
   onviewuserclick(evt){
-    console.log(evt)
     var targettoken = evt.currentTarget.dataset.id
     utils.viewuserprofile(targettoken)
   },
@@ -396,7 +418,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    this.loadlivefeed(false, this.data.usertoken)
+    // this.loadlivefeed(false, this.data.usertoken)
   },
 
   /**

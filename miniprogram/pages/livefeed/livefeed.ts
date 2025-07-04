@@ -1,6 +1,7 @@
 // pages/livefeed/livefeed.ts
 import * as utils from "../../utils/util"
 import * as API from "../../utils/serverAPI"
+import * as im from "../../utils/IMAPI"
 import { resource } from "../../utils/resources"
 Page({
 
@@ -16,7 +17,10 @@ Page({
       active: false,
     }],
     currentavatar: "ALL",
+    feedstream: {},
     feeddata: [],
+    feedstate:{
+    },
 
     ohnoimg: utils.MapImageUrl("ohno.jpg")
   },
@@ -103,21 +107,69 @@ Page({
     console.log(feedlist)
     return feedlist
   },
+  getActivePerson(){
+    // console.log(this.data.person)
+    return this.data.person.find(t=>t.active).token
+  },
+  onscrollbottom(){
+    var person = this.getActivePerson()
+    if(!person){
+      person = ""
+    }
+    this.loadlivefeed(false, person)
+  },
+  getCateKey(k){
+    if(k == ""){
+      k = "ALL"
+    }
+    return k
+  },
+  updatecurrentfeed(key){
+    this.setData({
+      feeddata: this.data.feedstream[key]
+    })
+    this.updateperson(key)
+  },
+  updateperson(token){
+    var pointer = token
+    if(pointer == ""){
+      pointer = "ALL"
+    }
+    this.data.person.map(item=>{
+      item.active = item.token == pointer
+    })
+    this.setData({
+      person: this.data.person
+    })
+  },
   loadlivefeed(append:boolean=false, viewtoken:string=""){
-    utils.getLivefeedByMyToken(resource.user.id, 0, (data)=>{
+    var cate = this.getCateKey(viewtoken)
+    if(!this.data.feedstate.hasOwnProperty(cate)){
+      var defaultstatus = {  
+        nonextpage:false,
+        pageindex: 0,
+      }
+      this.data.feedstate[cate] = defaultstatus
+    }
+    var status = this.data.feedstate[cate]
+    if(status.nonextpage){
+      this.updatecurrentfeed(cate)
+      return
+    }
+    var pindex = status.pageindex
+    var pagesize = 10
+    utils.getLivefeedByMyToken(resource.user.id, pindex, (data)=>{
       this.bindpersons(data.data)
       var converted = this.decoratefeed(data.data)
-      var pointer = viewtoken
-      if(pointer == ""){
-        pointer = "ALL"
+
+      status.nonextpage = data.data.length < pagesize
+      status.pageindex += 1
+      this.data.feedstate[cate] = status
+      if(!this.data.feedstream.hasOwnProperty(cate)){
+        this.data.feedstream[cate] =[]
       }
-      this.data.person.map(item=>{
-        item.active = item.token == pointer
-      })
-      this.setData({
-        feeddata: converted,
-        person: this.data.person
-      })
+      this.data.feedstream[cate].push(...converted)
+      this.updatecurrentfeed(cate)
     }, (err)=>{
       console.error(err)
       utils.alert("获取动态信息失败")
@@ -161,6 +213,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    // 清除所有监听
+    im.clearlistenerreqeusts()
     this.loadlivefeed(false)
   },
 

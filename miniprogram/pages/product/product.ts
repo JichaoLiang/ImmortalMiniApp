@@ -18,7 +18,11 @@ Page({
 
     displaylist : ["introduction", "comment"],
     display: "introduction",
-    feed: prodlist.feed,
+    feed: [],//prodlist.feed,
+    feedstatus: {
+      nonextpage:false,
+      pageindex: 0,
+    },
     cachebuttondisable: true,
     cachetext: "检查...",
 
@@ -75,6 +79,10 @@ Page({
       //   likecount: 12,
       // }
     ],
+    commentstatus:{
+      nonextpage:false,
+      pageindex: 0
+    },
 
     behaviorstatus:{
       liked: false,
@@ -142,6 +150,7 @@ Page({
       // 发送成功后关闭弹框
       this.hideCommentModal()
       this.loadC2PBehavior()
+      this.clearcomments()
       this.loadComments()
       wx.pageScrollTo({
         scrollTop: 0
@@ -261,7 +270,26 @@ Page({
       console.error(err)
     })
   },
+  clearcomments(){
+    this.data.commentstatus = {
+      nonextpage: false,
+      pageindex: 0
+    }
+    this.data.comments = []
+    this.setData({
+      comments: this.data.comments,
+      commentstatus: this.data.commentstatus
+    })
+  },
   loadComments(){
+    var pagesize = 20
+    var status = this.data.commentstatus
+    var nonextpage = status.nonextpage
+    var pageindex = status.pageindex
+    var skip = pagesize * pageindex
+    if(nonextpage){
+      return
+    }
     API.listcomment(this.data.productid, (commentlist)=>{
       var comments = []
       for(var i = 0;i < commentlist.length; i++){
@@ -273,10 +301,13 @@ Page({
         }
         comments.push(commentitem)
       }
-      console.log("comments")
-      console.log(comments)
+      status.nonextpage = comments.length < pagesize
+      status.pageindex += 1
+
+      this.data.comments.push(...comments)
+
       this.setData({
-        comments:comments
+        comments:this.data.comments
       })
     }, (err:any)=>{
       console.error(err)
@@ -285,7 +316,7 @@ Page({
         icon: "error",
         duration: 2000
       })
-    })
+    }, skip, pagesize)
   },
   loadC2PBehavior(){
     API.getC2PBehavior(this.data.productid,(data)=>{
@@ -341,6 +372,34 @@ Page({
     var tagval = evt.currentTarget.dataset.value
     viewproductlist(tagval)
   },
+  onscrollbottom(evt){
+    var tab = this.data.display
+    // introduction
+    if(tab == this.data.displaylist[0]){
+      this.fetchfeed()
+    }
+    else if(tab == this.data.displaylist[1]){
+      this.loadComments()
+    }
+  },
+  fetchfeed(){
+    var status = this.data.feedstatus
+    var pagesize = 8
+    var skip = status.pageindex * pagesize
+    if(status.nonextpage){
+      return
+    }
+    fetchFeedList([], (feed:any)=>{
+      for (var i = 0; i < feed.length; i++){
+        feed[i].image = MapImageUrl(feed[i].image)
+      }
+
+      status.nonextpage = feed.length < pagesize
+      status.pageindex += 1
+      this.data.feed.push(...feed)
+      this.setData({feed: this.data.feed, status: status})
+    }, (feed:any)=>{}, skip, pagesize)
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -353,7 +412,7 @@ Page({
       this.setData({product: prod})
       this.loadTags()
       this.loadC2PBehavior()
-      this.loadComments()
+      // this.loadComments()
     }, (err: any)=>{
       console.error(err)
       wx.showToast({
@@ -362,43 +421,13 @@ Page({
         duration: 2000,
       })
     })
-    // getProductById(options.productid, (prod:any)=>{
-    //   console.log(MapImageUrl(prod.images[0].url))
-    //   prod.images[0].url = MapImageUrl(prod.images[0].url)
-    //   this.setData({product: prod})
-    // })
-    fetchFeedList([], (feed:any)=>{
-      for (var i = 0; i < feed.length; i++){
-        feed[i].image = MapImageUrl(feed[i].image)
-      }
-      this.setData({feed: feed})
-    }, (feed:any)=>{})
-    // for (var i = 0;i < prodlist.productlist.length; i++){
-    //   var prod = prodlist.productlist[i]
-    //   if( prod.id == this.data.productid){
-    //     this.setData({product: prod})
+    this.fetchfeed()
+    // fetchFeedList([], (feed:any)=>{
+    //   for (var i = 0; i < feed.length; i++){
+    //     feed[i].image = MapImageUrl(feed[i].image)
     //   }
-    // }
-    // wx.request({
-    //   url: 'http://localhost:5046/Immortal/ListVideos?packageid=' + this.data.productid, // 开发者服务器接口地址
-    //   method: 'GET', // HTTP 请求方法，默认为 GET
-    //   header: {
-    //     'content-type': 'application/json' // 设置请求的 header，默认为 application/json
-    //   },
-    //   success(res) {
-    //     console.log(res.data); // 接口调用成功的回调函数
-    //     //result = res.data
-    //   },
-    //   fail(err) {
-    //     console.error(err); // 接口调用失败的回调函数
-    //     // errordetail = err
-    //     // error = true
-    //   },
-    //   complete() {
-    //     // getresult = true
-    //   }
-    //   });
-    //console.log("test all cached")
+    //   this.setData({feed: feed})
+    // }, (feed:any)=>{}, 0, 8)
     console.log("productid: " + this.data.productid)
     allcached(this.data.productid, (result)=>{
       if(result){

@@ -1,7 +1,7 @@
 <!--pages/livefeed/livefeed.wxml-->
 <import src="../templates/templates.wxml"></import>
 
-<scroll-view show-scrollbar="true" scroll-x="true" style='background-color:#f0f0f0;height: 250rpx; display: flex; white-space:nowrap;flex-direction: column;'>
+<scroll-view bindscrolltolower="onscrollbottom" lower-threshold="50" show-scrollbar="true" scroll-x="true" style='background-color:#f0f0f0;height: 250rpx; display: flex; white-space:nowrap;flex-direction: column;'>
         <!-- <view style="border-radius: 5px; margin:2px; font-size: 12px;padding: 18.8rpx;display:inline-block;" wx:for="{{categorys}}" wx:key="title" wx:for-item="item"  data-cateid="{{item.id}}" bindtap="showCate" class="List {{selectedcategory==item.id?'active':''}}">{{item.title}}</view> -->
         <template is="avatarcard" wx:for="{{person}}" data="{{...item}}"></template>
 </scroll-view>

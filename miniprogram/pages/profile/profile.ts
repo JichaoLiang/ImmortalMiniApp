@@ -1,5 +1,6 @@
 import * as utils from "../../utils/util"
 import * as API from "../../utils/serverAPI"
+import * as im from "../../utils/IMAPI"
 import * as resource from '../../utils/resources'
 import { isDataValueHandlerExisted } from "XrFrame/core/DataValue"
 import { registerComponent } from "XrFrame/xrFrameSystem"
@@ -29,7 +30,10 @@ Page({
 
     // person: [],
     feeddata: [],
-
+    feedstate:{  
+      nonextpage:false,
+      pageindex: 0,
+    },
 
     ohnoimg: utils.MapImageUrl("ohno.jpg"),
     products: [],
@@ -200,7 +204,7 @@ Page({
   onLoad(options) {
     var usertoken = options.usertoken
     console.log(`user token: ${usertoken}`)
-    if(usertoken && resource.resource.user.id != usertoken){
+    if(usertoken && utils.isMe(usertoken)){
       this.setData({isMySelf: false})
       API.ViewUserProfile(resource.resource.user.id, usertoken, (result)=>{
         console.log(result)
@@ -311,12 +315,29 @@ Page({
       )
     })
   },
+  onscrollbottom(){
+    // utils.alert("到底加载")
+    if(!utils.pressDelayedButton("profile_onscrollbottom")){
+      return
+    }
+    this.loadlivefeed(true, this.data.usertoken)
+  },
   loadlivefeed(append:boolean=false, viewtoken:string=""){
-    utils.getLivefeedByMyToken(resource.resource.user.id, 0, (data)=>{
+    var pagesize = 10
+    var status = this.data.feedstate
+    if(status.nonextpage){
+      return
+    }
+    
+    utils.getLivefeedByMyToken(resource.resource.user.id, status.pageindex, (data)=>{
       // this.bindpersons(data.data)
       var converted = this.decoratefeed(data.data)
+      this.data.feeddata.push(...converted)
+      status.nonextpage = converted.length < pagesize
+      status.pageindex += 1
       this.setData({
-        feeddata: converted
+        feeddata: this.data.feeddata,
+        feedstate: status
       })
     }, (err)=>{
       console.error(err)
@@ -392,10 +413,22 @@ Page({
       utils.alert("取关失败")
     },true)
   },
+  clearfeedstream(){
+    this.data.feeddata = []
+    this.data.feedstate.nonextpage = false
+    this.data.feedstate.pageindex = 0
+    this.setData({
+      feeddata: this.data.feeddata,
+      feedstate: this.data.feedstate
+    })
+  },
   /**
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    // 清除所有监听
+    im.clearlistenerreqeusts()
+    this.clearfeedstream()
     this.loadlivefeed(false, this.data.usertoken)
   },
 

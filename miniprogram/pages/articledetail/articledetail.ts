@@ -8,6 +8,10 @@ Page({
     richcontent: {},
 
     replies: [],
+    replystatus:{
+      nonextpage: false,
+      pageindex: 0,
+    },
     comments: [],
     commentContent: '',
     articleId: '',
@@ -27,8 +31,18 @@ Page({
   },
   onShow(){
     console.log("onshow")
+    this.clearreply()
     this.loadreply()
     this.updatepreview()
+  },
+
+  onscrollbottom(){
+    if(this.data.replystatus.nonextpage){
+      utils.alert("到底啦")
+    }
+    else{
+      this.loadreply()
+    }
   },
   
   loadArticle() {
@@ -63,6 +77,15 @@ Page({
       utils.alert("加载文章失败")
     })
   },
+  clearreply(){
+    this.setData({
+      replystatus: {
+        nonextpage: false,
+        pageindex: 0,
+      },
+      replies: []
+    })
+  },
   loadreply(){
     console.log("load reply")
     console.log(this.data.articleId)
@@ -72,10 +95,17 @@ Page({
       }, 1000);
       return
     }
-    this.data.replies = []
-    API.loadarticlereplies(this.data.articleId, this.data.replypageindex, (res)=>{
+    // this.data.replies = []
+    var status = this.data.replystatus
+    var nonext = status.nonextpage
+    if(nonext){
+      return
+    }
+    var pagesize = 20
+    API.loadarticlereplies(this.data.articleId, status.pageindex, (res)=>{
       console.log('replies:')
       console.log(res.data)
+      var resdata = res.data
       var datastatus = {count:0, target: res.data.length}
       for(var i = 0;i< res.data.length; i++){
         var data= res.data[i]
@@ -102,6 +132,8 @@ Page({
             datastatus.count += 1
             if(datastatus.count == datastatus.target){
             // console.log(this.data.replies)
+              status.nonextpage = resdata.length < pagesize
+              status.pageindex += 1
               this.updatepreview()
             }
           }, (err)=>{
@@ -113,6 +145,8 @@ Page({
         }
         fetchtextfunc()
       }
+
+
     },(err)=>{
       console.error(err)
       wx.hideLoading()

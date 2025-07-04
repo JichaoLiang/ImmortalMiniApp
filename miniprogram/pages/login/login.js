@@ -62,7 +62,7 @@ Page({
     tempuser.signature = this.data.signature;
     var avatar = this.data.defaultAvatar
     console.log(avatar)
-    if(!avatar.startsWith("http://tmp/")){
+    if(avatar.startsWith("http")){
       console.log('start with http')
       var tks = this.data.defaultAvatar.split('.')
       var last = tks[tks.length - 1]
@@ -116,7 +116,7 @@ Page({
     tempuser.signature = this.data.signature;
     var avatar = this.data.defaultAvatar
     console.log(avatar)
-    if(!avatar.startsWith("http://tmp/")){
+    if(avatar.startsWith("http")){
       console.log('start with http')
       var tks = this.data.defaultAvatar.split('.')
       var last = tks[tks.length - 1]

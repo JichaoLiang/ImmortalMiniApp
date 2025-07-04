@@ -1,4 +1,5 @@
 /**index.wxss**/
+@import "../templates/templates.wxss"
 page {
   height: 100vh;
   display: flex;

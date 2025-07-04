@@ -4,18 +4,44 @@ import * as resource from "../utils/resources"
 export var listenerrequestpool = []
 
 export const clearlistenerreqeusts = ()=>{
-  listenerrequestpool.forEach(t=>t.value.abort())
+  console.log(`listen requests: ${listenerrequestpool.length}`)
+  listenerrequestpool.forEach(t=>{
+    try{
+    t.value.abort()
+    }catch(ex){
+      console.log(ex)
+    }
+  })
   listenerrequestpool = []
+}
+
+export const droprequestbykey = (key:string)=>{
+  for(var i = 0;i<listenerrequestpool.length;i++){
+    var current = listenerrequestpool[i]
+    if(current.key.toLowerCase() == key.toLowerCase())
+    {
+      try
+      {
+        current.abort()
+      }
+      catch(ex){
+        console.log(ex)
+      }
+      listenerrequestpool.splice(i, 1)
+      i -= 1
+    }
+  }
 }
 
 export const callIMserver = (routerpath:string, parameters:any, callback:any, failedcallback:any=(err)=>{}, timeout=1000* 60 * 20)=>{
   return API.callserver(routerpath, parameters, callback, failedcallback, "IM", timeout=timeout)
 }
 
-export const Listen = (touser:string, timeoffset:Date=new Date(), success:any, failed:any, taskhandlefunction:any)=>{
+export const Listen = (touser:string, timeoffset:Date=new Date(), success:any, failed:any)=>{
   console.log('listen start')
   var token = resource.resource.user.id
-  return callIMserver("listen", 
+  var key:string = new Date().getTime() + "_" + Math.random()
+  var request =  callIMserver("listen", 
   {
     token: token,
     totoken: touser,
@@ -24,24 +50,31 @@ export const Listen = (touser:string, timeoffset:Date=new Date(), success:any, f
     var time = data.timeoffset
     var newtime = new Date(time)
     success(data)
-    var handler = Listen(touser, newtime, success, failed, taskhandlefunction)
-    taskhandlefunction(handler)
+    droprequestbykey(key)
+    var handler = Listen(touser, newtime, success, failed)
   }, (err)=>{
     console.error(err)
     failed(err)
+    
+    if(err.errMsg && err.errMsg == "request:fail abort"){
+      return
+    }
     var time = timeoffset
     var newtime = new  Date(time)
-    var handler = Listen(touser, newtime, success, failed, taskhandlefunction)
-    taskhandlefunction(handler)
+    droprequestbykey(key)
+    var handler = Listen(touser, newtime, success, failed)
   })
+  listenerrequestpool.push({func:"listen",key:key,value:request})
+  return request
 }
 
 
-export const ListenBatch = (touser:string[], timeoffset:Date[], success:any, failed:any, taskhandlefunction:any)=>{
+export const ListenBatch = (touser:string[], timeoffset:Date[], success:any, failed:any)=>{
   console.log(`touser: ${touser}`)
   console.log('listen start')
   var token = resource.resource.user.id
-  return callIMserver("ListenBatch", 
+  var key:string = new Date().getTime() + "_" + Math.random()
+  var request = callIMserver("ListenBatch", 
   {
     token: token,
     totokens: touser,
@@ -54,19 +87,21 @@ export const ListenBatch = (touser:string[], timeoffset:Date[], success:any, fai
     }
     console.log(`new time: ${newtime}, touser: ${touser}`)
     success(data)
-    var handler = ListenBatch(touser, newtime, success, failed, taskhandlefunction)
-    taskhandlefunction(handler)
+    var handler = ListenBatch(touser, newtime, success, failed)
   }, (err)=>{
     console.error(err)
     failed(err)
+    if(err.errMsg && err.errMsg == "request:fail abort"){
+      return
+    }
     var time = timeoffset
     var newtime = []
     for(var i = 0;i<touser.length; i++){
       newtime.push( new Date(time) )
     }
-    var handler = ListenBatch(touser, newtime, success, failed, taskhandlefunction)
-    taskhandlefunction(handler)
+    var handler = ListenBatch(touser, newtime, success, failed)
   })
+  listenerrequestpool.push({func:"listenbatch",key:key,value:request})
 }
 
 export const sendmessage = (touser:string, message:string, success:any, failed:any)=>{

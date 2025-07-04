@@ -4,26 +4,31 @@ const app = getApp<IAppOption>()
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 import { resource } from '../../utils/resources'
 import * as API from '../../utils/serverAPI'
-import { platform, listVideoIdByProductId, viewuserprofile, listAudioIdByProductId, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, requireUserInfo, weixinlogin } from 
+import * as im from "../../utils/IMAPI"
+import { pressDelayedButton, platform, listVideoIdByProductId, viewuserprofile, listAudioIdByProductId, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, requireUserInfo, weixinlogin, alert, viewproduct } from 
 "../../utils/util"
 
 Component({
   data: {
-    feedstream: [],
+    ohnoimg: MapImageUrl("ohno.jpg"),
+    feedstream: {},
+    selectedfeed: [],
+    feedstate:{
+    },
     headbar:{
       images:[
-        {
-          url: '/images/resources/image1.jpg',
-          title: '午夜杀机',
-          linkid: 'xujiangv15'},
-        {
-          url: '/images/resources/image2.jpg',
-          title: '吃纸的女孩',
-          linkid: '456'},
-        {
-          url: '/images/resources/image3.jpg',
-          title: '破晓黎明',
-          linkid: '789'},
+        // {
+        //   url: '/images/resources/image1.jpg',
+        //   title: '午夜杀机',
+        //   linkid: 'xujiangv15'},
+        // {
+        //   url: '/images/resources/image2.jpg',
+        //   title: '吃纸的女孩',
+        //   linkid: '456'},
+        // {
+        //   url: '/images/resources/image3.jpg',
+        //   title: '破晓黎明',
+        //   linkid: '789'},
       ]
     },
     categorys:[
@@ -68,16 +73,6 @@ Component({
         title:"热门",
         link:"/pages/productlist/productlist?method=Hot"
       },
-      // {
-      //   icon:"/images/Icon2.png",
-      //   title:"最新",
-      //   link:"456"
-      // },
-      // {
-      //   icon:"/images/Icon3.png",
-      //   title:"关注",
-      //   link:"789"
-      // },
       {
         icon:"/images/Icon4.png",
         title:"收藏",
@@ -101,6 +96,7 @@ Component({
       nickName: '',
     },
     hasUserInfo: false,
+    
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
   },
@@ -121,9 +117,11 @@ Component({
     },
     showTip(evt:any){
       console.log(evt)
-      wx.showToast({title: evt.target.dataset.url, //弹框内容
-      icon: 'success', //弹框模式
-      duration: 2000 })
+      var productid = evt.target.dataset.url
+      // wx.showToast({title: evt.target.dataset.url, //弹框内容
+      // icon: 'success', //弹框模式
+      // duration: 2000 })
+      viewproduct(productid)
     },
     showCate(evt:any){
       var cateid = evt.target.dataset.cateid
@@ -156,21 +154,97 @@ Component({
         })
       }
     },
+    onscrollbottom(){
+      if(!pressDelayedButton("index_onscrollbottom")){
+        return
+      }
+      this.fetchfeed()
+    },
+    getCateKey(){
+      var cate = "all"
+      var tag = [this.data.selectedcategory]
+      if(tag[0] == this.data.categorys[0].id){
+        tag = []
+      }
+      if(tag.length > 0){
+        cate = tag[0]
+      }
+      return cate
+    },
+    getCurrentCateFeed(){
+      var cate = this.getCateKey()
+      return this.data.feedstream[cate]
+    },
     fetchfeed(){
       var tag = [this.data.selectedcategory]
       if(tag[0] == this.data.categorys[0].id){
         tag = []
       }
-      console.log(tag)
+      var cate = this.getCateKey()
+      if(!this.data.feedstate.hasOwnProperty(cate)){
+        var defaultstatus = {  
+          nonextpage:false,
+          pageindex: 0,
+        }
+        this.data.feedstate[cate] = defaultstatus
+      }
+      var status = this.data.feedstate[cate]
+      if(status.nonextpage){
+        this.updatecurrentfeed()
+        return
+      }
+      const pagesize = 4
+      var pindex = status.pageindex
+      var skip = pindex * pagesize
+      var take = pagesize
       fetchFeedList(tag, (feed:any)=>{
         for (var i = 0; i < feed.length; i++){
           feed[i].image = MapImageUrl(feed[i].image)
         }
-        this.setData({feedstream: feed})
+        status.nonextpage = feed.length < pagesize
+        status.pageindex += 1
+        this.data.feedstate[cate] = status
+        if(!this.data.feedstream.hasOwnProperty(cate)){
+          this.data.feedstream[cate] =[]
+        }
+        this.data.feedstream[cate].push(...feed)
+        this.setData({feedstream: this.data.feedstream, feedstate: this.data.feedstate})
+        this.updatecurrentfeed()
       }, (feed:any)=>{
+      },skip, take)
+    },
+    updatecurrentfeed(){
+      var feed = this.getCurrentCateFeed()
+      this.setData({selectedfeed: feed})
+    },
+    fetchHeader(){
+      API.getHeadline((result)=>{
+        this.data.headbar.images = []
+        var list = []
+        for(var i = 0;i<result.length; i++){
+          var current = result[i]
+          var item = 
+          {
+            url: MapImageUrl(current.image) ,
+            title: current.title,
+            type: current.contenttype,
+            linkid: current.productid,
+          }
+          list.push(item)
+        }
+        this.setData({
+          headbar: {
+            images: list
+          }
+        })
+      }, (err)=>{
+        alert("获取标题信息失败。")
       })
     },
     onShow(options){
+      // 清除所有监听
+      im.clearlistenerreqeusts()
+      this.fetchHeader()
       /* @if env=='miniprogram' */
       console.log('func: requireUserInfo')
       requireUserInfo((weisinid)=>{

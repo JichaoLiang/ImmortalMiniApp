@@ -1,5 +1,5 @@
 <!--pages/product/product.wxml-->
-<scroll-view class="scrollarea" scroll-y type="list">
+<scroll-view bindscrolltolower="onscrollbottom" lower-threshold="50" style="height: 1400rpx;" scroll-y type="list">
   <view style="display: flex; flex-direction: column; align-items: center; position: relative;">
   <view style="width: 100%; max-height: 240px; box-sizing: border-box;background-color: rgb(255, 255, 255);">
         <!-- <view style="color: aliceblue; z-index: 99999; position: absolute; bottom:40rpx; left:40rpx;" bindtap="showTip" data-url='{{item.linkid}}'>{{item.title}}</view> -->

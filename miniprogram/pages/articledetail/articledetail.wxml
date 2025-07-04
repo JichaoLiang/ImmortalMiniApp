@@ -1,7 +1,7 @@
 <view class="container">
-  <scroll-view class="article">
-    <view class="article-view" style="border-bottom: #000000; border-bottom-width: 2px;height:100%">
-      <view>
+  <scroll-view bindscrolltolower="onscrollbottom" lower-threshold="50" scroll-y="true" style="overflow-y: scroll;height:1400rpx;padding: 0rpx;">
+    <view class="article-view" style="border-bottom: #000000; border-bottom-width: 2px;">
+      <view style="margin: 0rpx;">
       <view class="title">{{article.title}}</view>
       <view style="display: flex; margin-left: 30rpx;margin-top:30rpx;">
         <image style="display: flex; width: 80rpx;height:80rpx;margin:10rpx;margin-top:20rpx;border-radius: 75rpx;" src="{{article.image}}" bind:tap="onviewuser" data-id="{{item.token}}"></image>
@@ -16,15 +16,15 @@
       </view>
       <import src="/miniprogram_npm/towxml/towxml.wxml"/>
       <towxml nodes="{{richcontent}}"/>
-      <view style="display:flex;font-size: small;margin-left:40rpx;" data-replyid="{{article.idarticle}}" data-replyname="{{article.nickname}}" bind:tap="onreply">
+      <view style="display: flex; font-size: small;margin-left:40rpx;" data-replyid="{{article.idarticle}}" data-replyname="{{article.nickname}}" bind:tap="onreply">
         <image style="width:35rpx;height:35rpx;" src="{{shareicon}}"></image>
         回复
       </view>
       <view class="splitbar"></view>
-    </view>
+      </view>
 
       <!-- 回复 -->
-    <view wx:for="{{replies}}" wx:key="idarticle" wx:for-item="art" style="border-bottom: #000000; border-bottom-width: 2px;">
+      <view wx:for="{{replies}}" wx:key="idarticle" wx:for-item="art" style="border-bottom: #000000; border-bottom-width: 2px;">
     <view class="title">{{art.title}}</view>
     <view style="display: flex; margin-left: 30rpx;margin-top:30rpx;">
       <image style="display: flex; width: 80rpx;height:80rpx;margin:10rpx;margin-top:20rpx;border-radius: 75rpx;" src="{{art.image}}" bind:tap="onviewuser" data-id="{{art.token}}"></image>
@@ -43,79 +43,7 @@
       回复
     </view>
     <view class="splitbar"></view>
-    </view>
-    
-    
-  </view>
-      <!-- 底部弹框 -->
-      <!-- <view class="comment-modal" wx:if="{{showComment}}">
-        <view class="modal-mask" catchtap="hideCommentModal"></view>
-        <view class="modal-content">
-          <view class="modal-header">
-            <text class="title">发表评论</text>
-            <text class="cancel-btn" catchtap="hideCommentModal">取消</text>
-          </view>
-          <view class="input-area">
-            <textarea 
-              class="comment-input" 
-              placeholder="请输入您的评论..." 
-              placeholder-class="placeholder"
-              auto-height
-              focus="{{showComment}}"
-              bindinput="onCommentInput"
-              value="{{commentText}}"
-            ></textarea>
-          </view>
-          <view class="modal-footer">
-            <button 
-              class="capsule-btn" 
-              style="margin-left: 175rpx;"
-              disabled="{{trimText.length == 0}}" 
-              bindtap="sendComment"
-            >发送</button>
-          </view>
-        </view>
-      </view> -->
-<!--     
-    <view class="meta">
-      <image src="{{article.authorAvatar}}" class="avatar"></image>
-      <text class="author">{{article.author}}</text>
-      <text class="time">{{formatTime(article.createTime)}}</text>
-    </view>
-    
-    <block wx:for="{{article.images}}" wx:key="*this">
-      <image src="{{item}}" mode="widthFix" class="content-image"></image>
-    </block>
-    
-    <block wx:if="{{article.video}}">
-      <video src="{{article.video}}" controls class="content-video"></video>
-    </block>
-    
-    <view class="content">{{article.content}}</view>
-    
-    <view class="stats">
-      <text>浏览 {{article.viewCount}} 次</text>
-      <text>评论 {{article.commentCount}} 条</text>
-    </view>
-  </view>
-  
-  <view class="comment-section">
-    <view class="comment-title">评论 ({{comments.length}})</view>
-    
-    <view class="comment-list">
-      <view wx:for="{{comments}}" wx:key="_id" class="comment-item">
-        <image src="{{item.authorAvatar}}" class="comment-avatar"></image>
-        <view class="comment-content">
-          <view class="comment-author">{{item.author}}</view>
-          <view class="comment-text">{{item.content}}</view>
-          <view class="comment-time">{{formatTime(item.createTime)}}</view>
-        </view>
       </view>
     </view>
-    
-    <view class="comment-input">
-      <input placeholder="写下你的评论..." bindinput="onCommentInput" value="{{commentContent}}" />
-      <button bindtap="submitComment" size="mini">发送</button>
-    </view> -->
   </scroll-view>
 </view>

@@ -96,7 +96,7 @@
 
           
           <!-- <import src="../templates/templates.wxml"></import> -->
-          <scroll-view wx:if="{{item.id==0}}" scroll-y="true" style="height:1500rpx;">
+          <scroll-view bindscrolltolower="onscrollbottom" lower-threshold="50" wx:if="{{item.id==0}}" scroll-y="true" style="height:1500rpx;">
             <template wx:if="{{person.length == 1}}" is="ohno" data="{{ohnoimg}}"></template>
             <view wx:for="{{feeddata}}">
               <view style="margin:0rpx;">

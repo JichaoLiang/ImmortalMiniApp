@@ -5,7 +5,7 @@
       <view wx:for="{{topics}}" wx:key="id" wx:item="item" bindtap="switchtab" data-id="{{item.id}}" class="tab-item {{topics[selected].id==item.id?'active':''}}">{{item.name}}
       <view class="tab-indicator"></view></view>
   </view>
-  <scroll-view scroll-y="true" style="position:fixed; top:100rpx;height: 1300rpx; overflow-y:scroll;">
+  <scroll-view bindscrolltolower="onscrollbottom" lower-threshold="50" scroll-y="true" style="position:fixed; top:100rpx;height: 1300rpx; overflow-y:scroll;">
   <view wx:if="{{articles.length == 0}}">
     <image src="{{ohnopic}}" style="width: 600rpx;height:530rpx;margin-top: 200rpx;margin-left: 80rpx;"></image>
   </view>

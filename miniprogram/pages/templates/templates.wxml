@@ -11,7 +11,7 @@
 <template name="usercard">
   <view class="card-card">
     <!-- 整体采用flex布局，头像在左，信息在右 -->
-    <view class="card-card-content" data-id="{{token}}" bind:tap="onusercardclick">
+    <view class="card-card-content" data-id="{{id}}" bind:tap="onusercardclick">
       <!-- 左侧头像 -->
       <view class="card-avatar-section">
         <image class="card-avatar" src="{{avatar}}" mode="aspectFill"></image>
@@ -187,7 +187,7 @@
   <!-- 头像卡片  -->
     <view data-id="{{utoken}}" bind:tap="onviewuserclick" class="card-mini-inline-card">
       <!-- 整体采用flex布局，头像在左，信息在右 -->
-      <view class="card-mini-card-content" data-id="{{utoken}}" bind:tap="onusercardclick">
+      <view class="card-mini-card-content" data-id="{{utoken}}">
         <!-- 左侧头像 -->
         <view class="card-mini-avatar-section">
           <image class="card-mini-avatar" src="{{image}}" mode="aspectFill"></image>

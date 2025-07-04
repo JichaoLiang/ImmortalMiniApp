@@ -30,6 +30,7 @@
   flex-wrap: wrap;
   margin: 16rpx;
   justify-content: space-between;
+  width:90%;
 }
 
 .grid-item{
@@ -339,10 +340,12 @@
 }
 
 .tag-item{
+  display: inline-block;
   background-color: rgb(245, 230, 188);
   border-radius: 10rpx;
   width: 180rpx;
   padding: 10rpx;
+  margin: 5rpx;
   text-align: center;
   justify-content: center;
 }

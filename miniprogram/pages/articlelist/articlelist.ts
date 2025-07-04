@@ -8,6 +8,9 @@ Page({
     selected: 0,
     topics: [],
     articles: [],
+    articlestore: {},
+    articlestatus: {
+    },
     pageindex: 0,
     ohnopic: utils.MapImageUrl("ohno.jpg")
   },
@@ -18,6 +21,7 @@ Page({
     })
   },
   onShow() {
+    this.cleararticlestore();
     this.loadArticles();
   },
   
@@ -33,11 +37,37 @@ Page({
       utils.alert("加载分类失败")
     }, this.data.broadcasemode)
   },
+  activeArticeid(id){
+    this.setData({articles: this.data.articlestore[id]})
+  },
+  cleararticlestore(){
+    this.setData({
+      articlestore: {},
+      articlestatus: {}
+    })
+  },
+  onscrollbottom(){
+    var id = this.data.topics[this.data.selected].id
+    this.loadtopiccontent(id)
+  },
   loadtopiccontent(id){
     if(!id){
       id = this.data.topics[this.data.selected].id
     }
-    API.loadarticlelist(id, this.data.pageindex, (res)=>
+    var status = this.data.articlestatus[id]
+    if(!status){
+      status = {
+        nonextpage: false,
+        pageindex: 0
+      }
+      this.data.articlestatus[id] = status
+    }
+    if(status.nonextpage){
+      this.activeArticeid(id)
+      return
+    }
+    var pagesize = 20
+    API.loadarticlelist(id, status.pageindex, (res)=>
     {
       var completestatus = {count:0, target:res.data.length}
       if(res.data.length == 0)
@@ -46,9 +76,6 @@ Page({
           articles: res.data
         })
       }
-      var ids = res.data.map((e)=>{return e.idarticle})
-      console.log(ids)
-      // console.log(res)
       res.data.forEach(element => {
         // console.log(element.image)
         element.image = utils.MapImageUrl(element.image)
@@ -65,12 +92,19 @@ Page({
             }
             completestatus.count += 1
             if(completestatus.count == completestatus.target){
-              console.log("set article data:")
-              var ids = res.data.map((e)=>{return e.idarticle})
-              console.log(ids)
+              var articlesdata = this.data.articlestore[id]
+              if(!articlesdata){
+                articlesdata = []
+                this.data.articlestore[id] = articlesdata
+              }
+              articlesdata.push(...res.data)
+              status.nonextpage = res.data.length < pagesize
+              status.pageindex += 1
+              this.data.articlestatus[id] = status
               this.setData({
-                articles: res.data
+                articles: articlesdata
               })
+              this.activeArticeid(id)
             }
           },(err)=>{})
         }

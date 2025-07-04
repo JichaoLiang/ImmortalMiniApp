@@ -1,14 +1,15 @@
-<!--index.wxml-->
-<scroll-view class="scrollarea" scroll-y type="list">
+
+<import src="../templates/templates.wxml"></import><!--index.wxml-->
+<scroll-view bindscrolltolower="onscrollbottom" lower-threshold="50" class="scrollarea" scroll-y type="list">
   <view style="display: flex; flex-direction: column; align-items: center; position: relative;">
     <!-- <image src="/images/bg.png" mode="aspectFill" style="position: absolute; width: 100%;"/> -->
     <!-- <image src="/images/head.png" mode="aspectFit" style="position: absolute; height: 320rpx; top: 30rpx; right:-140rpx"/> -->
 
     <view style="width: 100%; max-height: 240px; box-sizing: border-box;background-color: rgb(230, 196, 196);">
       <swiper autoplay interval="5000" circular>
-          <swiper-item wx:for="{{headbar.images}}" wx:key="url"  wx:for-item="item">
+          <swiper-item wx:for="{{headbar.images}}" wx:key="url" wx:for-item="item"  style="justify-content:center; display:flex">
             <view style="color: aliceblue; z-index: 99999; position: absolute; bottom:40rpx; left:40rpx;" bindtap="showTip" data-url='{{item.linkid}}'>{{item.title}}</view>
-            <image mode="heightFix" src="{{item.url}}"  bindtap="showTip" data-url='{{item.linkid}}'></image>
+            <image mode="aspectFill" style="width:100%;height: auto; overflow: hidden;" src="{{item.url}}"  bindtap="showTip" data-url='{{item.linkid}}'></image>
           </swiper-item>
         </swiper>
     </view>
@@ -22,7 +23,9 @@
       <view style="border-radius: 5px; margin:2px; font-size: 12px;padding: 18.8rpx;display:inline-block;" wx:for="{{categorys}}" wx:key="title" wx:for-item="item"  data-cateid="{{item.id}}" bindtap="showCate" class="List {{selectedcategory==item.id?'active':''}}">{{item.title}}</view>
     </scroll-view>
     <view class="grid-container" >
-      <view class="grid-item" wx:for="{{feedstream}}" wx:for-item="item">
+      <template wx:if="{{selectedfeed.length == 0}}" is="ohno" data="{{ohnoimg:ohnoimg}}">
+      </template>
+      <view class="grid-item" wx:for="{{selectedfeed}}" wx:for-item="item">
       <view style="display: inline-block; position: absolute; z-index: 999; margin:40rpx; color:white;">{{"《" + item.title + "》"}}</view>
       <image src="{{item.image}}" bind:tap="productDetail" data-prodid="{{item.linkid}}"></image>
       <text>{{item.comment}}</text>
