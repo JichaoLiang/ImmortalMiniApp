@@ -490,26 +490,27 @@ export const requireUserInfo = (success:any, failed:any)=>{
   }
   if(resource.resource.currentplatform != enums.PLATFORM.wechat) {
     console.log('func: getMiniProgramCode')
-    wx.getMiniProgramCode({
-      success(res) {
-        console.log('callback: getMiniProgramCode')
-        if (res.code) {
-          console.log(res)
-          success(res.code)
-          // 将code发送到后端，后端通过微信接口获取openid
-          // wx.request({
-          //   url: '你的服务器地址',
-          //   data: { code: res.code },
-          //   success(res) {
-          //     console.log('openid:', res.data.openid)
-          //   }
-          // })
-        }
-      },fail(res){
-        failed(res)
-        console.log(res)
-      }
-    })
+    wx.navigateTo({url: "/pages/login/login"})
+    // wx.getMiniProgramCode({
+    //   success(res) {
+    //     console.log('callback: getMiniProgramCode')
+    //     if (res.code) {
+    //       console.log(res)
+    //       success(res.code)
+    //       // 将code发送到后端，后端通过微信接口获取openid
+    //       // wx.request({
+    //       //   url: '你的服务器地址',
+    //       //   data: { code: res.code },
+    //       //   success(res) {
+    //       //     console.log('openid:', res.data.openid)
+    //       //   }
+    //       // })
+    //     }
+    //   },fail(res){
+    //     failed(res)
+    //     console.log(res)
+    //   }
+    // })
   }
   else {
     wx.login({
@@ -663,76 +664,65 @@ export const alert = (msg:string, icon:"success"|"error" = "success", duration:n
   })
 }
 
-export const weixinlogin = (callback:any, token:string, isnew:boolean)=>{
+export const applogin = (success:any, failed:any, userentity:any, password:string, isnew:boolean)=>{
+  if(isnew){
+    appregist(success, failed, userentity,password)
+  }
+  else{
+    API.applogin(success, failed, userentity.phonenumber, userentity.password)
+  }
+}
+
+export const appregist = (success:any, failed:any, userentity:any, password:string) =>{
+  API.appregister(success, failed, userentity.imgid, userentity.phonenumber, userentity.nickname, userentity.signature, password)
+}
+
+export const weixinlogin = (callback:any, entity:any, password:string, isnew:boolean)=>{
   console.log("func: utils.weixinlogin")
-  var tempinfo = resource.resource.logintempuser;
+  var tempinfo = entity;
   var userinfo = resource.resource.user;
-  var weisinid = resource.resource.logintempuser.id;
-  console.log("test weixintempid: " + weisinid)
-  // if(!weisinid){
-  //   setTimeout(() => {
-  //     weixinlogin(callback, token, isnew)
-  //   }, 500);
-  //   return;
-  // }
-  var fetchorcreateuser = (tk:string)=>{
-    if(isnew){
-      if(tempinfo.imgid.length == 0){
-        wx.navigateTo({url: "/pages/login/login"})
-        return
-      }
-      console.log(tempinfo)
-      var imgfiletemppath = tempinfo.imgid;
-      console.log(imgfiletemppath)
-      var tokens = imgfiletemppath.split('.');
-      var extname = tokens[tokens.length - 1].toLowerCase();
-      API.uploadAvatar(imgfiletemppath, extname, (imgid)=>{
-        API.newuser(tk, imgid, tempinfo.nickname, tempinfo.phonenumber, tempinfo.signature,(result)=>{
-          userinfo.id = tk;
-          userinfo.imgid = imgid;
-          userinfo.nickname = tempinfo.nickname;
-          userinfo.phonenumber = tempinfo.phonenumber;
-          userinfo.signature = tempinfo.signature;
-          console.log("存储user:" + JSON.stringify(userinfo))
-          wx.setStorageSync(enums.userinfo, userinfo)
-          callback(userinfo)
-        })
-      })
-    }
-    else{
-      API.fetchUserInfoByToken(tk,(info)=>{
-        console.log(info)
-        userinfo.id = info.id;
-        userinfo.imgid = info.imgid;
-        userinfo.nickname = info.nickname;
-        userinfo.phonenumber = info.phonenumber;
-        userinfo.signature = info.signature;
+
+  if(isnew){
+    // if(tempinfo.imgid.length == 0){
+    //   wx.navigateTo({url: "/pages/login/login"})
+    //   return
+    // }
+    console.log(tempinfo)
+    var imgfiletemppath = tempinfo.imgid;
+    console.log(imgfiletemppath)
+    var tokens = imgfiletemppath.split('.');
+    var extname = tokens[tokens.length - 1].toLowerCase();
+    API.uploadAvatar(imgfiletemppath, extname, (imgid)=>{
+      API.appregister((result)=>{
+        userinfo.id = result.id;
+        userinfo.imgid = result.imgid;
+        userinfo.nickname = result.nickname;
+        userinfo.phonenumber = result.phonenumber;
+        userinfo.signature = result.signature;
         console.log("存储user:" + JSON.stringify(userinfo))
         wx.setStorageSync(enums.userinfo, userinfo)
         callback(userinfo)
-      },(err)=>{
+      }, (err)=>{
         console.log(err)
-        wx.showToast({
-          title: "登录失败",
-          icon: "error"
-        })
-      })
-    }
-  }
-  if(token && token.length > 0){
-    fetchorcreateuser(token)
+        alert("注册失败")
+      }, imgid, tempinfo.phonenumber,tempinfo.nickname,tempinfo.signature,password)
+    })
   }
   else{
-    API.getTokenbyTempWxid(weisinid, true, (token)=>{
-      var tk = token.token
-      fetchorcreateuser(tk)
-    }, (err)=>{
-      var msg = "获取token失败: " + err
+    API.applogin((info)=>{
+      console.log(info)
+      userinfo.id = info.id;
+      userinfo.imgid = info.imgid;
+      userinfo.nickname = info.nickname;
+      userinfo.phonenumber = info.phonenumber;
+      userinfo.signature = info.signature;
+      console.log("存储user:" + JSON.stringify(userinfo))
+      wx.setStorageSync(enums.userinfo, userinfo)
+      callback(userinfo)
+    },(err)=>{
       console.log(err)
-      wx.showToast({title: msg, //弹框内容
-      icon: 'success', //弹框模式
-      duration: 2000 })
-    })
+      alert("登录失败")
+    },tempinfo.phonenumber, password)
   }
 }
 
@@ -759,7 +749,7 @@ export const weixinlogin_wechat = (callback:any, token:string, isnew:boolean=tru
       console.log(imgfiletemppath)
       var tokens = imgfiletemppath.split('.');
       var extname = tokens[tokens.length - 1].toLowerCase();
-      API.uploadfile(imgfiletemppath, extname, (imgid)=>{
+      API.uploadAvatar(imgfiletemppath, extname, (imgid)=>{
         API.newuser(tk, imgid, tempinfo.nickname, tempinfo.phonenumber, tempinfo.signature,(result)=>{
           userinfo.id = tk;
           userinfo.imgid = imgid;

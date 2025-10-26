@@ -288,7 +288,12 @@ Page({
     })
     var promiselist = history.map((t) => new Promise((resolve, reject)=>{
       API.GetProductByPackageID(t.productid,(productinfo)=>{
-        resolve({time: t.time, productinfo:productinfo})
+        if(productinfo){
+          resolve({time: t.time, productinfo:productinfo})
+        }
+        else{
+          resolve(undefined)
+        }
       },(err)=>{
         resolve(undefined)
           console.log(err)

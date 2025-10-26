@@ -8,7 +8,7 @@ Page({
   data: {
     platform: util.platform,
     appIcon: util.MapImageUrl('IM.jpg'),
-    appName: 'Immortal APP 登录',
+    appName: '简绣互动',
     checkedAgree: false,
     readyToLogin: false,
     loginSuccess: false, // 标记是否登录成功
@@ -16,6 +16,12 @@ Page({
     phonenumber: "点击填写电话",
     nickname: "",
     signature: "",
+
+    password: "",
+    confirmpassword: "",
+
+    passwordpass: true,
+    phonenumberpass: true,
 
     knowntoken: "", //已知token, 补全信息模式
     noregist: false,
@@ -49,14 +55,11 @@ Page({
     })
     this.updatelogin()
   },
-  weixinlogin(code) {
-    console.log('func: weixinlogin')
-    var weisinid = code.code
-    console.log(code)
-    console.log('app temp id: ' + weisinid)
+  weixinlogin_app() {
+    console.log('func: weixinlogin_app')
     this.setData({ loginSuccess: true });
+    var password = this.data.password
     var tempuser = resource.resource.logintempuser;
-    tempuser.id = weisinid
     tempuser.nickname = this.data.nickname;
     tempuser.phonenumber = this.data.phonenumber;
     tempuser.signature = this.data.signature;
@@ -70,7 +73,6 @@ Page({
       const filename = wx.env.USER_DATA_PATH + '/' + uuid + "." + last
       //console.log(filename)
 
-      var knowntoken = this.data.knowntoken
       var isnew = !this.data.noregist
       wx.downloadFile({
         url: avatar,
@@ -85,7 +87,7 @@ Page({
             
             util.weixinlogin((userinfo)=>{
               wx.navigateBack();
-            }, knowntoken, isnew)
+            }, tempuser, password, isnew)
           }
         },
         fail(err) {
@@ -104,7 +106,7 @@ Page({
       console.log(tempuser)
       util.weixinlogin((userinfo)=>{
         wx.navigateBack();
-      }, knowntoken, isnew)
+      }, tempuser, password, isnew)
     }
   },
   weixinlogin_wechat(knowntoken) {
@@ -165,17 +167,7 @@ Page({
    * 触发小程序登录，登录成功后自动退出页面
    */
   onTapWeixinMiniProgramLogin() {
-    wx.weixinMiniProgramLogin({
-      //wx.miniapp.login({
-      success: this.weixinlogin,
-      fail: (e) => {
-        console.error(e)
-        wx.showToast({
-          title: '小程序登录失败',
-          icon: 'none'
-        });
-      }
-    })
+    this.weixinlogin_app(this.data.knowntoken)
   },
   handleLogin(){
     this.weixinlogin_wechat(this.data.knowntoken)
@@ -225,9 +217,34 @@ Page({
     this.updatelogin();
     //this.setData({ readyToLogin: this.data.checkedAgree && this.data.nickname.length > 0 && this.data.phonenumber.length == 11 });
   },
+  oninputpassword(e){
+    var value = e.detail.value
+    this.setData({
+      password: value
+    })
+    this.updatelogin();
+  },
+  oninputconfirmpassword(e){
+    var value = e.detail.value
+    this.setData({
+      confirmpassword: value
+    })
+    this.updatelogin();
+  },
   updatelogin(){
+    const telRegex = /^1(3[0-9]|4[01456879]|5[0-35-9]|6[2567]|7[0-8]|8[0-9]|9[0-35-9])\d{8}$/;
+    var phonenumberpass = telRegex.test(this.data.phonenumber)
+
+    var regpwd = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[`~!@#$%^&*()_+<>?:\"{},.\/\\;'[\]])[A-Za-z\d`~!@#$%^&*()_+<>?:\"{},.\/\\;'[\]]{8,}$/;
+    var passwordloginvalid = regpwd.test(this.data.password)
+    var passwordpass = regpwd.test(this.data.password) && this.data.password == this.data.confirmpassword
+
     // console.log(this.data.checkedAgree+"||"+(this.data.nickname.length)+"||"+this.data.phonenumber.length)
-    this.setData({ readyToLogin:  this.data.checkedAgree && this.data.nickname.length > 0 && this.data.phonenumber.length == 11 || this.data.noregist});
+    this.setData({ readyToLogin:  this.data.checkedAgree && this.data.nickname.length > 0 && phonenumberpass && passwordpass 
+      || (this.data.noregist && passwordloginvalid && phonenumberpass),
+    phonenumberpass: phonenumberpass,
+    passwordpass: passwordpass
+    });
   },
 
 

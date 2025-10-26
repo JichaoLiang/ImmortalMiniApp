@@ -241,7 +241,15 @@ Component({
         alert("获取标题信息失败。")
       })
     },
+    clearfeedcache(){
+      this.setData({
+        feedstream: {},
+        feedstate:{
+        }
+      })
+    },
     onShow(options){
+      console.log('onshow')
       // 清除所有监听
       im.clearlistenerreqeusts()
       this.fetchHeader()
@@ -259,6 +267,7 @@ Component({
         // })
       }, ()=>{})
       /* endif */
+      this.clearfeedcache()
       this.fetchfeed()
     }
   },

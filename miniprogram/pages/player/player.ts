@@ -2,6 +2,7 @@ import { getAssetLoaderTypes } from "XrFrame/loader/AssetLoader"
 import { baseurl } from "../../utils/config"
 import { fileexists, fetchAideo, fetchVideo, fetchVideos, getCheckpointfilepathbyPackageiId, getProdById, MapImageUrl, logview } from "../../utils/util"
 import * as API from "../../utils/serverAPI"
+import * as enums from "../../utils/enum"
 import { resource } from "../../utils/resources"
 
 // var ResourceManager = require('../../utils/resourceStore.ts')
@@ -25,6 +26,7 @@ Page({
     preloadcache: {},
     nextlist: "",
     actionList: [],
+    showend: false,
 
     product:{},
 
@@ -290,6 +292,9 @@ Page({
     });
 
   },
+  onquit(){
+    wx.navigateBack()
+  },
   fadeinbuttons(index:number=0, interval:number=1500){
     if(this.data.actionList.length <= index){
       return
@@ -449,7 +454,21 @@ timeupdate(evt){
     }, threshold + 0.5);
   }
 },
+setshowend(){
+  var showed = false
+  if(this.data.context.hasOwnProperty(enums.showendfeature)){
+    showed = this.data.context[enums.showendfeature].length > 0
+  }
+  else{
+    showed = false
+  }
+  this.data.context[enums.showendfeature] = ""
+  this.setData({
+    showend: showed
+  })
+},
 playend(evt){
+  this.setshowend()
   if(this.data.autopass){
     console.log("autopass" + ":" + this.data.autopass)
     this.playNode(this.data.defaultnext)

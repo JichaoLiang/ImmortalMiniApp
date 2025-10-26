@@ -6,3 +6,5 @@ export const PLATFORM = {
   ios: "ios",
   devtools: "devtools"
 }
+
+export const showendfeature = "playend"

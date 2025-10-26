@@ -59,11 +59,12 @@
     "pages/articlelist/articlelist",
     "pages/cardtemplate/cardtemplate",
     "pages/livefeed/livefeed",
-    "pages/message/message"
+    "pages/message/message",
+    "pages/introduction/introduction"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Immortal APP",
+    "navigationBarTitleText": "简绣",
     "navigationBarBackgroundColor": "#ffffff"
   },
   "tabBar": {

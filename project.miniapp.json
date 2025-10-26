@@ -1,12 +1,12 @@
 {
   "miniVersion": "v2",
-  "name": "Immortal",
-  "version": "0.0.26",
-  "versionCode": 101,
+  "name": "简绣",
+  "version": "0.0.11",
+  "versionCode": 100,
   "i18nFilePath": "i18n",
   "mini-android": {
     "resourcePath": "miniapp/android/nativeResources",
-    "sdkVersion": "1.5.4",
+    "sdkVersion": "1.6.20",
     "toolkitVersion": "0.11.0",
     "useExtendedSdk": {
       "media": true,
@@ -16,33 +16,33 @@
       "xweb": false
     },
     "icons": {
-      "hdpi": "c:/Users/Administrator/Desktop/ComfyUI_06626_.jpg",
-      "xhdpi": "c:/Users/Administrator/Desktop/ComfyUI_06626_.jpg",
-      "xxhdpi": "c:/Users/Administrator/Desktop/ComfyUI_06626_.jpg",
-      "xxxhdpi": "c:/Users/Administrator/Desktop/ComfyUI_06626_.jpg"
+      "hdpi": "d:/ComfyUI_windows_portable_nightly_pytorch/ComfyUI/output/ComfyUI_07403_.png",
+      "xhdpi": "d:/ComfyUI_windows_portable_nightly_pytorch/ComfyUI/output/ComfyUI_07403_.png",
+      "xxhdpi": "d:/ComfyUI_windows_portable_nightly_pytorch/ComfyUI/output/ComfyUI_07403_.png",
+      "xxxhdpi": "d:/ComfyUI_windows_portable_nightly_pytorch/ComfyUI/output/ComfyUI_07403_.png"
     },
     "splashscreen": {
-      "hdpi": "c:/Users/Administrator/Desktop/ComfyUI_05289_.png",
-      "xhdpi": "c:/Users/Administrator/Desktop/ComfyUI_05289_.png",
-      "xxhdpi": "c:/Users/Administrator/Desktop/ComfyUI_05289_.png"
+      "hdpi": "c:/Users/Administrator/Desktop/杂七杂八/ComfyUI_05289_.png",
+      "xhdpi": "c:/Users/Administrator/Desktop/杂七杂八/ComfyUI_05289_.png",
+      "xxhdpi": "c:/Users/Administrator/Desktop/杂七杂八/ComfyUI_05289_.png"
     },
-    "enableVConsole": "open",
+    "enableVConsole": "close",
     "privacy": {
       "enable": true
     }
   },
   "mini-ios": {
-    "sdkVersion": "1.5.4",
+    "sdkVersion": "1.6.24",
     "toolkitVersion": "0.0.9",
     "useExtendedSdk": {
       "WeAppOpenFuns": true,
-      "WeAppNetwork": true,
+      "WeAppNetwork": false,
       "WeAppBluetooth": false,
       "WeAppMedia": false,
       "WeAppLBS": false,
       "WeAppOthers": false
     },
-    "enableVConsole": "open",
+    "enableVConsole": "close",
     "icons": {
       "mainIcon120": "",
       "mainIcon180": "",
@@ -52,7 +52,7 @@
       "settingsIcon87": "",
       "notificationIcon40": "",
       "notificationIcon60": "",
-      "appStore1024": "c:/Users/Administrator/Desktop/ComfyUI_06626_.jpg"
+      "appStore1024": ""
     },
     "splashScreen": {
       "customImage": ""
@@ -80,6 +80,18 @@
       "NSLocalNetworkUsageDescription": "当前应用程序需要访问本地网络，如需修改描述请前往「project.miniapp.json - 隐私信息访问许可描述」修改，并且关闭「自动使用默认描述补全默认隐私信息访问许可」",
       "NSSystemAdministrationUsageDescription": "当前应用程序需要进行系统管理操作，如需修改描述请前往「project.miniapp.json - 隐私信息访问许可描述」修改，并且关闭「自动使用默认描述补全默认隐私信息访问许可」",
       "NSPhotoLibraryAddUsageDescription": "应用程序在请求访问照片库，如需修改描述请前往「project.miniapp.json - 隐私信息访问许可描述」修改，并且关闭「自动使用默认描述补全默认隐私信息访问许可"
+    },
+    "gdt": {
+      "splashAd_defaultEnable": false
     }
+  },
+  "mini-plugin": {
+    "android": [
+      {
+        "open": false,
+        "pluginId": "",
+        "pluginVersion": ""
+      }
+    ]
   }
 }

@@ -68,7 +68,7 @@
 }
 .underline-input {
   width: 100%;
-  height: 80rpx;
+  height: 60rpx;
   padding-bottom: 10rpx;
   font-size: 32rpx;
   color: #333;
@@ -94,7 +94,7 @@
 }
 
 .donutLogin__login-action {
-  bottom: calc(env(safe-area-inset-bottom) + 120px);
+  bottom: calc(env(safe-area-inset-bottom) + 80px);
   position: absolute;
   left: 50%;
   transform: translateX(-50%);

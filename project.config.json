@@ -19,7 +19,7 @@
       "outputPath": ""
     },
     "coverView": false,
-    "postcss": false,
+    "postcss": true,
     "minified": true,
     "enhance": true,
     "showShadowRootInWxmlPanel": false,
@@ -31,7 +31,13 @@
     "swc": false,
     "disableSWC": true,
     "compileWorklet": false,
-    "autoConditionalCompile": true
+    "autoConditionalCompile": true,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false
   },
   "simulatorType": "wechat",
   "condition": {},
@@ -45,10 +51,10 @@
     "ignore": [],
     "include": []
   },
-  "appid": "wx2717927178af889c",
+  "appid": "wxe45871d5182d9653",
   "projectname": "miniprogram-345",
   "simulatorPluginLibVersion": {
-    "wxext14566970e7e9f62": "3.6.5-10"
+    "wxext14566970e7e9f62": "3.6.5-40"
   },
   "projectArchitecture": "multiPlatform",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",

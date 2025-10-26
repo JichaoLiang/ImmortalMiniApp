@@ -20,11 +20,14 @@
       <checkbox id="ckbx-haveaccount" value="noregist" ></checkbox><label for="ckbx-haveaccount">已经注册，直接登录</label>
     </checkbox-group>
   </view>
-  <!-- <view class="donutLogin__app-label">输入您的昵称</view> -->
-  <input class="underline-input" style="{{noregist?'display:none':''}}" bindinput="oninput" placeholder="<输入您的昵称>"></input>
   <!-- <view class="donutLogin__app-label">手机号码用于查看定制内容</view> -->
-  <input class="underline-input" style="{{noregist?'display:none':''}}" bindinput="oninputphoneNumber" placeholder="<手机号码用于查看定制内容>"></input>
+  <input class="underline-input" bindinput="oninputphoneNumber" placeholder="<手机号码>"></input>
+  <!-- <button style="width:200rpx;display:flex;float:right;font-size: 22rpx;color: #808080;" >发送验证码</button> -->
+  <!-- <view class="donutLogin__app-label">输入您的昵称</view> -->
+  <input class="underline-input" style="{{noregist?'display:none':''}}" bindinput="oninput" placeholder="<您的昵称>"></input>
   <input class="underline-input" style="{{noregist?'display:none':''}}" bindinput="oninputsignature" placeholder="<个性签名>"></input>
+  <input class="underline-input" password="true" bindinput="oninputpassword" placeholder="<密码,8位以上，包含数字字母符号>"></input>
+  <input class="underline-input" password="true" style="{{noregist?'display:none':''}}" bindinput="oninputconfirmpassword" placeholder="<确认密码>"></input>
   <!-- <button class="donutLogin__app-avatar" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">{{phonenumber}}</button> -->
 </view>
 <!-- #elif MP -->
@@ -34,9 +37,9 @@
     <image class="avatar" src="{{defaultAvatar}}"></image>
   </button>
   <!-- <view class="donutLogin__app-label">输入您的昵称</view> -->
+  <input class="underline-input" bindinput="oninputphoneNumber" placeholder="手机号"></input>
   <input class="underline-input" bindinput="oninput" placeholder="输入您的昵称"></input>
   <!-- <view class="donutLogin__app-label">手机号码用于查看定制内容</view> -->
-  <input class="underline-input" bindinput="oninputphoneNumber" placeholder="手机号码用于查看定制内容"></input>
   <input class="underline-input" bindinput="oninputsignature" placeholder="<个性签名>"></input>
   <!-- <button class="donutLogin__app-avatar" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">{{phonenumber}}</button> -->
 </view>
@@ -44,7 +47,7 @@
 
 <view class="donutLogin__login-action">
   <!-- #if ANDROID || IOS -->
-  <button  open-type="getUserInfo" class="donutLogin__login-button" type="primary" bindtap="onTapWeixinMiniProgramLogin" disabled="{{!readyToLogin}}">微信小程序登录</button>
+  <button  open-type="getUserInfo" class="donutLogin__login-button" type="primary" bindtap="onTapWeixinMiniProgramLogin" disabled="{{!readyToLogin}}">{{noregist?"登录":"注册并登录"}}</button>
   <!-- #elif MP -->
   <button 
     open-type="getUserInfo" 

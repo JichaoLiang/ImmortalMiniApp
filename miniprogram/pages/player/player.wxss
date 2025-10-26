@@ -89,8 +89,17 @@
   background-color: #fff;
   border-radius: 16rpx 16rpx 0 0;
   padding: 30rpx 30rpx 60rpx 30rpx;
-  z-index: 1000;
+  z-index: 98;
   box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.dummy-text{
+  background-color: unset;
+  font-size: 25rpx;
+  font-weight:normal;
+  min-width: 0rpx;
+  padding: 0rpx;
+  align-items:flex-start;
 }
 
 .modal-mask {
@@ -167,6 +176,7 @@
 }
 
 .fixedbutton{
+  display: flex;
   float: left;
   padding: 10rpx;
   margin-left: 20rpx;
@@ -186,7 +196,6 @@
 }
 
 .fixedbutton text{
-  float: left;
   width:30rpx;
   padding-top:20rpx;
 }

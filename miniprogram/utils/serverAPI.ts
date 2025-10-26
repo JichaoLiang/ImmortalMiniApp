@@ -134,6 +134,23 @@ export const uploadfile = (filepath:string, extname:string, callback:any, failca
   });
 }
 
+export const applogin = (success:any, failed:any, phonenumber:string, password:string)=>{
+  callserver("AppLogin", {
+    phonenumber: phonenumber,
+    password: password
+  }, success, failed)
+}
+
+export const appregister = (success:any, failed:any, imagekey:string, phonenumber:string, nickname:string, signature:string, password:string)=>{
+  callserver("AppNewUser", {
+    phonenumber: phonenumber,
+    password: password,
+    imagekey: imagekey,
+    nickname: nickname,
+    signature: signature
+  }, success, failed)
+}
+
 export const uploadAvatar = (filepath:string, extname:string, callback:any, failcallback:any=(err:any)=>{})=>{
   console.log(config.baseurl + 'AvatarUpload?extname=' + extname)
   wx.uploadFile({
@@ -324,6 +341,7 @@ export const GetProductByPackageID = (id:string, success:any, failed:any)=>{
         icon: "error",
         duration: 2000,
       })
+      success(undefined)
       return
     }
     resource.currentProduct = data[0]
