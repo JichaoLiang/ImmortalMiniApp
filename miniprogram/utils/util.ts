@@ -372,6 +372,43 @@ export const heartbit = (key:string)=>{
   }
 }
 
+export const fetchProductStateInfo = (productid:string, callbackfunc:Function)=>{
+  API.GetProductStateInfo(productid, (data)=>{
+    console.log('state:')
+    console.log(data)
+    callbackfunc(data)
+  }, (err)=>{
+    console.log(err)
+    alert("加载作品状态失败")
+  })
+}
+
+export const ProductSendReview = (productid:string, callbackfunc:Function)=>{
+  API.ProductSendReview(productid, (data)=>{
+    callbackfunc(data)
+  }, (err)=>{
+    console.log(err)
+    alert("作品提审失败")
+  })
+}
+
+export const ProductOffline = (productid:string, callbackfunc:Function)=>{
+  API.ProductOffline(productid, (data)=>{
+    callbackfunc(data)
+  }, (err)=>{
+    console.log(err)
+    alert("作品下线失败")
+  })
+}
+export const ProductRemove = (productid:string, callbackfunc:Function)=>{
+  API.ProductRemove(productid, (data)=>{
+    callbackfunc(data)
+  }, (err)=>{
+    console.log(err)
+    alert("作品删除失败")
+  })
+}
+
 export const fetchProductList = (callbackfun:Function, completecallback:Function)=>{
   if (!heartbit("product")){
     return callbackfun(products.productlist)

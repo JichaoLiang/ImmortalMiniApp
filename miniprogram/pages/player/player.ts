@@ -420,6 +420,7 @@ Page({
     // alert(context);
 },
 playBGM(audioid:string){
+  console.log("play bgm: " + audioid)
   var bgmid = this.data.bgmid
     if (audioid == bgmid) {
       return
@@ -478,6 +479,7 @@ isActionNode() {
   return this.data.context.NodeType == "Action";
 },
 handleActions(context:any, defaultnextid:string, videopath:string) {
+  console.log("bgmkey: " + JSON.stringify(context))
   if (context.BGMusicKey) {
       this.playBGM(context.BGMusicKey);
   }

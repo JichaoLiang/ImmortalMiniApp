@@ -295,7 +295,7 @@ Page({
           resolve(undefined)
         }
       },(err)=>{
-        resolve(undefined)
+          resolve(undefined)
           console.log(err)
       })
     }))
@@ -304,6 +304,9 @@ Page({
       console.log(t)
       var list = t.map(tt=>tt)
       var entities = list.map((ttt:any)=>{
+        if(!ttt){
+          return undefined
+        }
         var time = ttt.time
         var productinfo = ttt.productinfo
         productinfo.time = utils.reformattime(time)
@@ -312,6 +315,8 @@ Page({
           productinfo.image = utils.MapImageUrl(productinfo.images[0].url)
         }
         return productinfo
+      }).filter((ttt)=>{
+        return ttt
       })
       this.setData(
         {

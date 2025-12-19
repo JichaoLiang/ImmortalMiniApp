@@ -326,6 +326,54 @@ export const GetProductByAuthorID = (authortoken:string, success:any, failed:any
   }, failed)
 }
 
+export const GetProductStateInfo = (id:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("GetProductStateAndOperations", {
+    productid: id,
+    token:token,
+  }, (resp)=>{
+    console.log("product state:")
+    console.log(resp)
+    success(resp)
+  }, failed)
+}
+
+export const ProductSendReview = (id:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("SendReviewProduct", {
+    productid: id,
+    token:token,
+  }, (resp)=>{
+    console.log("Send review result:")
+    console.log(resp)
+    success(resp)
+  }, failed)
+}
+
+export const ProductOffline = (id:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("OfflineProduct", {
+    productid: id,
+    token:token,
+  }, (resp)=>{
+    console.log("Offline result:")
+    console.log(resp)
+    success(resp)
+  }, failed)
+}
+
+export const ProductRemove = (id:string, success:any, failed:any)=>{
+  var token = resource.user.id
+  callserver("EraseMyProduct", {
+    productid: id,
+    token:token,
+  }, (resp)=>{
+    console.log("Remove result:")
+    console.log(resp)
+    success(resp)
+  }, failed)
+}
+
 export const GetProductByPackageID = (id:string, success:any, failed:any)=>{
   var token = resource.user.id
   callserver("GetProductByPackageID", {

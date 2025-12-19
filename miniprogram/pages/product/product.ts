@@ -1,8 +1,9 @@
 // pages/product/product.ts
 const app = getApp<IAppOption>()
 var prodlist = require("../../utils/products.js")
+import { resource } from "../../utils/resources"
 import * as API from "../../utils/serverAPI"
-import { alert, viewproductlist, listVideoIdByProductId, listAudioIdByProductId, viewuserprofile, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, platform } from "../../utils/util"
+import { alert, viewproductlist, listVideoIdByProductId, listAudioIdByProductId, viewuserprofile, fetchVideo, fetchAideo, fetchVideos, fetchAudios, topercentage, allcached, getProductById, fetchFeedList, MapImageUrl, platform, fetchProductStateInfo, ProductSendReview, ProductOffline, ProductRemove  } from "../../utils/util"
 Page({
 
   /**
@@ -15,6 +16,14 @@ Page({
     },
     nodecount:0,
     cachednodecount:0,
+    ismine: false,
+    myProductStateText: "(加载中...)",
+    stateOperations:{
+      state: 0,
+      canReview: false,
+      canOffline: false,
+      canRemove: false,
+    },
 
     displaylist : ["introduction", "comment"],
     display: "introduction",
@@ -400,6 +409,92 @@ Page({
       this.setData({feed: this.data.feed, status: status})
     }, (feed:any)=>{}, skip, pagesize)
   },
+  loadState(){
+    fetchProductStateInfo(this.data.productid, (data)=>{
+      var state = data.state
+      var opertations = data.operations
+      var displaytext = ""
+      if(state == "Normal"){
+        displaytext = "在线"
+      }
+      else if (state == "PendingReview"){
+        displaytext = "审核中"
+      }
+      else if (state == "Debug"){
+        displaytext = "调试"
+      }
+      else if (state == "Offline"){
+        displaytext = "已下线"
+      }
+      else if (state == "Private"){
+        displaytext = "私域（仅目标可见）"
+      }
+      var canOffline = opertations.includes("Offline")
+      var canRemove = opertations.includes("Remove")
+      var canSendReview = opertations.includes("PendingReview")
+
+      this.setData({
+        myProductStateText: displaytext,
+        stateOperations: {
+          state: state,
+          canReview: canSendReview,
+          canRemove: canRemove,
+          canOffline: canOffline,
+        }
+      })
+    })
+  },
+  onSendReview(){
+    wx.showModal({
+      title:"确认提交审核",
+      content: "审核需要一些时间，请耐心等待",
+      success: (res)=>{
+        if(res.confirm){
+          ProductSendReview(this.data.productid, (resp)=>{
+            alert("提审成功")
+            this.loadState()
+          })
+        }
+        else{
+          alert("已取消")
+        }
+      }
+    })
+  },
+  onOffline(){
+    wx.showModal({
+      title:"确认",
+      content: "确定下线",
+      success: (res)=>{
+        if(res.confirm){
+          ProductOffline(this.data.productid, (resp)=>{
+            alert("下线成功")
+            this.loadState()
+          })
+        }
+        else{
+          alert("已取消")
+        }
+      }
+    })
+  },
+  onRemove(){
+    wx.showModal({
+      title:"确认",
+      content: "删除不可恢复",
+      success: (res)=>{
+        if(res.confirm){
+          ProductRemove(this.data.productid, (resp)=>{
+            alert("删除成功")
+            wx.navigateBack()
+          })
+        }
+        else{
+          alert("已取消")
+        }
+      }
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -409,9 +504,13 @@ Page({
       console.log(prod)
       prod.images[0].url = MapImageUrl(prod.images[0].url)
       prod.author.image = MapImageUrl(prod.author.image)
-      this.setData({product: prod})
+      var ismine = prod.author.id == resource.user.id.split('@')[0]
+      this.setData({product: prod, ismine:ismine})
       this.loadTags()
       this.loadC2PBehavior()
+      if(ismine){
+        this.loadState()
+      }
       // this.loadComments()
     }, (err: any)=>{
       console.error(err)

@@ -18,6 +18,14 @@
       <view class="tab-indicator"></view></view>
     </view>
     <view style="width: 100%;" wx:if="{{display=='introduction'}}">
+    <view wx:if="{{ismine}}" style="width: 85%;padding:30rpx; margin:20rpx; background-color: #f0f0f0; border-radius: 20rpx;">
+      <text>当前状态: {{myProductStateText}}</text>
+      <view>
+        <view wx:if="{{stateOperations.canReview}}" class='tag-item' style="margin-top:20rpx;" bind:tap="onSendReview" >审核上线</view> 
+        <view wx:if="{{stateOperations.canOffline}}" class='tag-item' style="margin-top:20rpx;" bind:tap="onOffline" >下线</view>
+        <view wx:if="{{stateOperations.canRemove}}" class='tag-item' style="margin-top:20rpx; color:white; background-color: #e41919" bind:tap="onRemove" >删除</view>
+      </view>
+    </view>
     <view style="width: 100%;margin-left:40rpx;margin-top:40rpx; " bind:tap="onviewauthortap">
       <image style="width: 50rpx; height:50rpx;float:left;border-radius: 25rpx; margin-right: 10rpx;" src="{{product.author.image}}"></image>
         <view style="float:left;text-decoration: underline;margin-right: 20rpx;">
