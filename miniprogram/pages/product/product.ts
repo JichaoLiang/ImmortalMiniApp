@@ -418,16 +418,16 @@ Page({
         displaytext = "在线"
       }
       else if (state == "PendingReview"){
-        displaytext = "审核中"
+        displaytext = "审核中，请耐心等待"
       }
       else if (state == "Debug"){
-        displaytext = "调试"
+        displaytext = "调试（调试状态的作品自上传保留3天）"
       }
       else if (state == "Offline"){
         displaytext = "已下线"
       }
       else if (state == "Private"){
-        displaytext = "私域（仅目标可见）"
+        displaytext = "私域（仅收藏此作品者可见）"
       }
       var canOffline = opertations.includes("Offline")
       var canRemove = opertations.includes("Remove")
