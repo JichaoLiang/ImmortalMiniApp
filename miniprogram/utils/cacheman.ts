@@ -14,15 +14,19 @@ export const fileexists = (filepath:string) =>{
 var cachelistkey = "imcachelist"
 
 export const clearcachestorage = (percentage:number)=>{
+  console.log("try to clear storage: " + percentage)
   var fs = wx.getFileSystemManager()
   var cachelist = wx.getStorageSync(cachelistkey)
   if(!cachelist){
     cachelist = []
   }
-  var truncatedcount = Math.floor(cachelist * percentage)
+  console.log("cache list length: " + cachelist.length)
+  var truncatedcount = Math.floor(cachelist.length * percentage)
+  console.log("to remove: " + truncatedcount)
   for(var i = 0;i<truncatedcount; i++){
     var current = cachelist.shift()
     var f = current.file
+    console.log("unlink file: " + f)
     fs.unlink({
       filePath: f
     })

@@ -49,6 +49,10 @@
   left:15rpx;
 }
 
+.div_header_bar {
+  top:0rpx;
+}
+
 .div_cover_box {
   display:none;
   position: absolute;

@@ -1,8 +1,9 @@
 <!--pages/player/player.wxml-->
 <view>
-    <video id="main_video" controls="" style="{{showComment?'top:-400rpx;':''}}height:1340rpx;width: 100%;" autoplay="true" muted="{{videomuted}}" src="{{videourl}}">
+    <video id="main_video" loop="{{loopplay}}" controls="{{false}}" show-play-btn="{{false}}" show-center-play-btn="{{false}}" bindtimeupdate="onTimeUpdate" bindloadedmetadata="onLoadedMetadata" style="{{showComment?'top:-400rpx;':''}}height:1340rpx;width: 100%;" autoplay="true" muted="{{videomuted}}" src="{{videourl}}">
       
       <cover-view id="top_bar" style="display: {{showloading?'block':'none'}};" class="div_top_bar">{{loadingmsg}}</cover-view>
+      <cover-view wx:if="{{question.length > 0}}" id="question_bar" style="display: {{showloading ?'none':'block'}};" class="div_top_bar div_header_bar">{{question}}</cover-view>
       <cover-view id="cover_box"  style="display: {{showloading?'block':'none'}};" class="div_cover_box"></cover-view>
       <cover-image id="cover_img" mode="widthFix" style="display: {{showloading?'block':'none'}}; " class="div_bg_img_cover_box" src="{{product.images[0].url}}"></cover-image>
       <cover-view id="div_replay" class="div_refresh_button" title="重新播放当前内容" bindsubmit="restartVideo();"></cover-view>

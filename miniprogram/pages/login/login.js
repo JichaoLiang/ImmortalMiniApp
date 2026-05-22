@@ -238,10 +238,21 @@ Page({
     var regpwd = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[`~!@#$%^&*()_+<>?:\"{},.\/\\;'[\]])[A-Za-z\d`~!@#$%^&*()_+<>?:\"{},.\/\\;'[\]]{8,}$/;
     var passwordloginvalid = regpwd.test(this.data.password)
     var passwordpass = regpwd.test(this.data.password) && this.data.password == this.data.confirmpassword
-
+    var platform = resource.resource.currentplatform
+    var readylogin
+    console.log(resource.resource.currentplatform)
+    if(platform == 'wechat'){
+      readylogin = this.data.checkedAgree && this.data.nickname.length > 0 && phonenumberpass
+      console.log(this.data.checkedAgree)
+      console.log(this.data.nickname.length)
+      console.log(phonenumberpass)
+    }
+    else {
+      readylogin = this.data.checkedAgree && this.data.nickname.length > 0 && phonenumberpass && passwordpass 
+      || (this.data.noregist && passwordloginvalid && phonenumberpass)
+    }
     // console.log(this.data.checkedAgree+"||"+(this.data.nickname.length)+"||"+this.data.phonenumber.length)
-    this.setData({ readyToLogin:  this.data.checkedAgree && this.data.nickname.length > 0 && phonenumberpass && passwordpass 
-      || (this.data.noregist && passwordloginvalid && phonenumberpass),
+    this.setData({ readyToLogin:  readylogin,
     phonenumberpass: phonenumberpass,
     passwordpass: passwordpass
     });

@@ -59,8 +59,7 @@
     "pages/articlelist/articlelist",
     "pages/cardtemplate/cardtemplate",
     "pages/livefeed/livefeed",
-    "pages/message/message",
-    "pages/introduction/introduction"
+    "pages/message/message"
   ],
   "window": {
     "navigationBarTextStyle": "black",

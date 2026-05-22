@@ -442,7 +442,16 @@ Page({
           canOffline: canOffline,
         }
       })
+
+      this.checkState(state)
     })
+  },
+  checkState(state:string){
+    var ismine = this.data.ismine
+    if(!ismine && state != 'Normal'){
+      alert("该作品未上线。")
+      wx.navigateBack()
+    }
   },
   onSendReview(){
     wx.showModal({
@@ -508,9 +517,7 @@ Page({
       this.setData({product: prod, ismine:ismine})
       this.loadTags()
       this.loadC2PBehavior()
-      if(ismine){
-        this.loadState()
-      }
+      this.loadState()
       // this.loadComments()
     }, (err: any)=>{
       console.error(err)

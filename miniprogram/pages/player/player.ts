@@ -4,6 +4,7 @@ import { fileexists, fetchAideo, fetchVideo, fetchVideos, getCheckpointfilepathb
 import * as API from "../../utils/serverAPI"
 import * as enums from "../../utils/enum"
 import { resource } from "../../utils/resources"
+import * as playutils from "../../utils/playerutils"
 
 // var ResourceManager = require('../../utils/resourceStore.ts')
 var audio = wx.createInnerAudioContext()
@@ -21,6 +22,7 @@ Page({
     videomuted: false,
     continue: false,
     currentNode: "",
+    question: "",
     packageId: "",
     context: {},
     preloadcache: {},
@@ -31,6 +33,7 @@ Page({
     product:{},
 
     playing: false,
+    loopplay: false,
     videoid: "",
     bgmid: "",
     textinput: "",
@@ -241,16 +244,24 @@ Page({
   setchattext(evt: any) {
     this.data.context.promptText = evt.detail.value
   },
+  onTimeUpdate(evt: any){
+
+  },
+  onLoadedMetadata(evt: any) {
+
+  },
   buttonaction(evt: any){
     console.log(evt.target.dataset)
     var id = evt.target.dataset.id
     var question = evt.target.dataset.question
     this.clearActions()
-    this.showloading(question)
+    if(question && question.length > 0) {
+      this.showloading(question)
+    }
     this.playNode(id)
   },
   showloading(hoveredtext:string){
-    this.setData({showloading: true, loadingmsg: hoveredtext})
+    this.setData({showloading: true, loadingmsg: hoveredtext, question:hoveredtext})
   },
   hideloading(){
     this.setData({showloading: false, loadingmsg: ""})
@@ -265,7 +276,7 @@ Page({
     if(!context){
       context = this.data.context
     }
-    var req = baseurl + 'Immortal/GetVideoFile?packageid=' + escape(packageid) + "&nodeid=" + escape(nodeid) + "&context=" + JSON.stringify(context);
+    var req = baseurl + 'Immortal/GetVideoFile' //?packageid=' + escape(packageid) + "&nodeid=" + escape(nodeid) + "&context=" + JSON.stringify(context);
     // var req = 'http://127.0.0.1:5046/Immortal/GetVideoFile' //?packageid=' + escape(packageId) + "&nodeid=" + escape(currentNode) + "&context=" + JSON.stringify(context);
     // alert(req);
     // console.log(escape(this.data.packageId) + "_" + escape(this.data.currentNode) + "_" + JSON.stringify(this.data.context))
@@ -309,12 +320,30 @@ Page({
   updatedebuginfo(){
     this.setData({currentNode:this.data.currentNode, context:this.data.context, nextlist: this.data.nextlist})
   },
+  handleControl(control:any){
+    // console.log(control)
+    // if (control.Control_Questionoverride) {
+    //     this.setData({
+    //       question: control.Control_Questionoverride
+    //     })
+    // }
+    
+    // var loop = control.Rotate;
+    // if (!loop) {
+    //   loop = false;
+    // }
+    // this.setData({
+    //   loopplay: loop
+    // })
+  },
   updateStateByResponse(respJS:any, waitSignal:Boolean=false, callbackAction:any) {
     // alert(JSON.stringify(respJS.node));
     console.log(respJS)
     console.log(111)
     var nodeid = respJS.node.ID;
     this.data.currentNode = nodeid;
+    var question = respJS.node.Question;
+    this.data.question = question;
     var coxt = respJS.context;
     this.data.context = coxt;
     var actionlist = respJS.nextlist.data;
@@ -331,7 +360,8 @@ Page({
     for (var i = 0; i < actionlist.length; i++) {
         var action = actionlist[i];
         if (action.Preload){
-          this.preload(action.ID)
+          // PRELOAD FEATURE TEMPORARY NOT WORK, TO FIX THIS IN THE FUTRUE
+          // this.preload(action.ID)
         }
         var newitem = {
             text: action.Question,
@@ -347,8 +377,12 @@ Page({
         }
     }
     console.log(this.data.actionList)
-    this.setData({actionList: this.data.actionList})
+    this.setData({actionList: this.data.actionList, question:question})
     this.updatedebuginfo()
+    console.log("Control:" + respJS.node.Controls)
+    if(respJS.node.Controls){
+      this.handleControl(respJS.node.Controls);
+    }
     // updatedebugbox(JSON.stringify(respJS.node), JSON.stringify(actionlist), JSON.stringify(coxt));
 
     // rebindSubmitButton(currentNode);
@@ -371,11 +405,17 @@ Page({
         console.log(path)
         this.hideloading()
         this.setData({videourl: path, videomuted: this.data.videomuted})
+        // TODO
+        // playutils.playVideoAndPauseAtEnd(
+        //   this.data.videoid, this, (evt:any)=>{
+        //     this.playend(evt)
+        //   }
+        // )
         this.data.playing = false
         this.handleActions(this.data.context, defaultnextid, path);
         wx.getVideoInfo({src: path,
         success: (res)=>{
-          console.log('success')
+          // console.log('success')
           var duration = res.duration
           //TODO: load from config or backend
           var donotshowuntilSec = 4
@@ -387,7 +427,7 @@ Page({
           else{
             setTimeout(()=>{this.fadeinbuttons()}, timeout * 1000)
           }
-        },fail: (res)=>{
+        },fail: (res)=>{  
           console.log(res)
         }})
       }, timeleft);
@@ -578,13 +618,9 @@ handleActions(context:any, defaultnextid:string, videopath:string) {
     console.log("begin preload")
     var contxt = this.preplay(nodeid, true)
     this.play((respJS: any)=>{
-      // var nodeid = respJS.node.ID;
-      // this.data.currentNode = nodeid;
-      // var coxt = respJS.context;
-      // this.data.context = coxt;
-      // var actionlist = respJS.nextlist.data;
-      // this.data.nextlist = actionlist
-      this.data.preloadcache[nodeid] = respJS
+      if(!respJS.node.Action || respJS.node.Action.toLowerCase() == "node".toLowerCase()){
+        this.data.preloadcache[nodeid] = respJS
+      }
     },this.data.packageId, nodeid, contxt)
   },
   preplay(nodeid: string, preloadmode:boolean=false) {
